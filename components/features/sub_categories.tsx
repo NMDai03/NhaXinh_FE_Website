@@ -20,20 +20,21 @@ import { useEffect, useState } from "react";
 
 import axios from "axios";
 
-interface Category {
-  categoryId: number;
+interface SubCategory {
+  subCategoryId: number;
   name: string;
   description: string;
+  categoryName: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export default function Categories() {
-  const [Categories, setCategories] = useState<Category[]>([]);
+  const [Categories, setCategories] = useState<SubCategory[]>([]);
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5217/api/Categories/GetAllCategory"
+        "http://localhost:5217/api/SubCategory/GetAllCategory"
       );
       console.log("Categories:", response.data);
       setCategories(response.data);
@@ -49,7 +50,7 @@ export default function Categories() {
   return (
     <Card>
       <CardHeader className="px-7">
-        <CardTitle>Categories</CardTitle>
+        <CardTitle>Sub Categories</CardTitle>
         <CardDescription>Recent Categories from your store.</CardDescription>
       </CardHeader>
       <CardContent>
@@ -61,19 +62,25 @@ export default function Categories() {
               <TableHead className="hidden sm:table-cell">
                 Description
               </TableHead>
+              <TableHead className="hidden sm:table-cell">
+                Category Name
+              </TableHead>
               <TableHead className="text-right">Created at</TableHead>
               <TableHead className="text-right">Updated at</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {Categories.map((category) => (
-              <TableRow key={category.categoryId}>
-                <TableCell>{category.categoryId}</TableCell>
+              <TableRow key={category.subCategoryId}>
+                <TableCell>{category.subCategoryId}</TableCell>
                 <TableCell className="hidden sm:table-cell">
                   {category.name} <Badge variant="secondary">New</Badge>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
                   {category.description}
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  {category.categoryName}
                 </TableCell>
                 <TableCell className="text-right">
                   {moment(category.createdAt).format("DD-MM-YYYY")}

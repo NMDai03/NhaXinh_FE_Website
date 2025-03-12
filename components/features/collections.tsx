@@ -20,37 +20,38 @@ import { useEffect, useState } from "react";
 
 import axios from "axios";
 
-interface Category {
-  categoryId: number;
+interface Collections {
+  collectionId: number;
   name: string;
   description: string;
+  active: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-export default function Categories() {
-  const [Categories, setCategories] = useState<Category[]>([]);
-  const fetchCategories = async () => {
+export default function Collections() {
+  const [Collections, setCollections] = useState<Collections[]>([]);
+  const fetchCollections = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5217/api/Categories/GetAllCategory"
+        "http://localhost:5217/api/Collections/GetAllCollections"
       );
-      console.log("Categories:", response.data);
-      setCategories(response.data);
+      console.log("Collections:", response.data);
+      setCollections(response.data);
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      console.error("Error fetching collections:", error);
     }
   };
   useEffect(() => {
-    console.log("Categories component mounted");
-    fetchCategories();
+    console.log("Collections component mounted");
+    fetchCollections();
   }, []);
 
   return (
     <Card>
       <CardHeader className="px-7">
-        <CardTitle>Categories</CardTitle>
-        <CardDescription>Recent Categories from your store.</CardDescription>
+        <CardTitle>Materials</CardTitle>
+        <CardDescription>Recent Materials from your store.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -61,25 +62,29 @@ export default function Categories() {
               <TableHead className="hidden sm:table-cell">
                 Description
               </TableHead>
+              <TableHead className="hidden sm:table-cell">Status</TableHead>
               <TableHead className="text-right">Created at</TableHead>
               <TableHead className="text-right">Updated at</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Categories.map((category) => (
-              <TableRow key={category.categoryId}>
-                <TableCell>{category.categoryId}</TableCell>
+            {Collections.map((collection) => (
+              <TableRow key={collection.collectionId}>
+                <TableCell>{collection.collectionId}</TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {category.name} <Badge variant="secondary">New</Badge>
+                  {collection.name} <Badge variant="secondary">New</Badge>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {category.description}
+                  {collection.description}
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  {collection.active ? "Active" : "Inactive"}
                 </TableCell>
                 <TableCell className="text-right">
-                  {moment(category.createdAt).format("DD-MM-YYYY")}
+                  {moment(collection.createdAt).format("DD-MM-YYYY")}
                 </TableCell>
                 <TableCell className="text-right">
-                  {moment(category.updatedAt).format("DD-MM-YYYY")}
+                  {moment(collection.updatedAt).format("DD-MM-YYYY")}
                 </TableCell>
               </TableRow>
             ))}

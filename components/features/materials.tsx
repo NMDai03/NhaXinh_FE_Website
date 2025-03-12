@@ -20,37 +20,37 @@ import { useEffect, useState } from "react";
 
 import axios from "axios";
 
-interface Category {
-  categoryId: number;
+interface Materials {
+  materialId: number;
   name: string;
   description: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export default function Categories() {
-  const [Categories, setCategories] = useState<Category[]>([]);
-  const fetchCategories = async () => {
+export default function Materials() {
+  const [Materials, setMaterials] = useState<Materials[]>([]);
+  const fetchMaterials = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5217/api/Categories/GetAllCategory"
+        "http://localhost:5217/api/Material/GetAllMaterials"
       );
-      console.log("Categories:", response.data);
-      setCategories(response.data);
+      console.log("Materials:", response.data);
+      setMaterials(response.data);
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      console.error("Error fetching materials:", error);
     }
   };
   useEffect(() => {
-    console.log("Categories component mounted");
-    fetchCategories();
+    console.log("Materials component mounted");
+    fetchMaterials();
   }, []);
 
   return (
     <Card>
       <CardHeader className="px-7">
-        <CardTitle>Categories</CardTitle>
-        <CardDescription>Recent Categories from your store.</CardDescription>
+        <CardTitle>Materials</CardTitle>
+        <CardDescription>Recent Materials from your store.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -66,20 +66,20 @@ export default function Categories() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Categories.map((category) => (
-              <TableRow key={category.categoryId}>
-                <TableCell>{category.categoryId}</TableCell>
+            {Materials.map((material) => (
+              <TableRow key={material.materialId}>
+                <TableCell>{material.materialId}</TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {category.name} <Badge variant="secondary">New</Badge>
+                  {material.name} <Badge variant="secondary">New</Badge>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {category.description}
+                  {material.description}
                 </TableCell>
                 <TableCell className="text-right">
-                  {moment(category.createdAt).format("DD-MM-YYYY")}
+                  {moment(material.createdAt).format("DD-MM-YYYY")}
                 </TableCell>
                 <TableCell className="text-right">
-                  {moment(category.updatedAt).format("DD-MM-YYYY")}
+                  {moment(material.updatedAt).format("DD-MM-YYYY")}
                 </TableCell>
               </TableRow>
             ))}
