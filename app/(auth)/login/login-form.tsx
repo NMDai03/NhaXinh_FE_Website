@@ -1,4 +1,5 @@
-import { cn } from "@/lib/utils";
+"use client";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,30 +10,62 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const router = useRouter();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5217/api/Login/Login",
+        {
+          email,
+          password,
+        }
+      );
+
+      // Assuming the API returns a token
+      const token = response.data;
+
+      if (token) {
+        localStorage.setItem("authToken", token);
+        alert("Login successful!");
+        router.push("/");
+        // Optionally, redirect the user or handle success
+      } else {
+        setError("Login failed. Please try again.");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    }
+  };
+
   return (
     <div className="">
-      {/* Ảnh nền */}
+      {/* Background image */}
       <div
         className="absolute inset-0 w-full h-full bg-cover bg-center"
         style={{ backgroundImage: "url('/image/nhaxinhbg.jpg')" }}
       />
 
-      {/* Lớp phủ để tăng độ tương phản */}
+      {/* Overlay for contrast */}
       <div className="absolute inset-0 bg-black bg-opacity-50" />
 
-      {/* Form đăng nhập */}
+      {/* Login form */}
       <div className="relative flex min-h-screen justify-center items-center">
         <Card className="bg-white bg-opacity-90 shadow-lg w-full max-w-md p-6 rounded-xl">
           <CardHeader className="flex items-center gap-4">
-            {/* Tiêu đề */}
             <CardTitle className="text-2xl">Login</CardTitle>
-
-            {/* Ảnh */}
             <img
               src="/image/nhaxinhlogo.png"
               alt="nhaxinhbg"
@@ -41,7 +74,7 @@ export function LoginForm({
           </CardHeader>
 
           <CardContent>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
@@ -50,12 +83,21 @@ export function LoginForm({
                     type="email"
                     placeholder="m@example.com"
                     required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" required />
+                  <Input
+                    id="password"
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
                 </div>
+                {error && <div className="text-red-500">{error}</div>}
                 <Button type="submit" className="w-full">
                   Login
                 </Button>
