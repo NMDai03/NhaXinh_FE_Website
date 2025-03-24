@@ -20,19 +20,17 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-
-interface Product {
-  productId: number;
-  name: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Product } from "@/util/services/Api";
+import ProductImage from "./product-image";
+import { Switch } from "../../ui/switch";
+import { toast } from "react-toastify";
+import ProductDetailSheet from "./product-detail";
+import { Edit } from "lucide-react";
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
-  const pageSize = 10;
+  const pageSize = 5;
   const router = useRouter();
 
   const fetchProducts = async () => {
@@ -68,29 +66,55 @@ export default function Products() {
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
+              <TableHead className="hidden sm:table-cell">Images</TableHead>
               <TableHead className="hidden sm:table-cell">Name</TableHead>
-              <TableHead className="hidden sm:table-cell">
-                Description
-              </TableHead>
+              <TableHead className="hidden sm:table-cell">Status</TableHead>
               <TableHead className="text-right">Created at</TableHead>
               <TableHead className="text-right">Updated at</TableHead>
+              <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => (
+            {products.map((product: any) => (
               <TableRow key={product.productId}>
                 <TableCell>{product.productId}</TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {product.name} <Badge variant="secondary">New</Badge>
+                  <ProductImage product={product} />
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {product.description}
+                  <ProductDetailSheet productId={product.productId}>
+                    <a className="mr-2 hover:underline hover:cursor-pointer">
+                      {product.name}
+                    </a>
+                  </ProductDetailSheet>
+                  {moment().diff(moment(product.createdAt), "days") < 3 && (
+                    <Badge variant="secondary">New</Badge>
+                  )}
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  <StatusSwitch
+                    active={product.active}
+                    productId={product.productId}
+                    fetchProducts={fetchProducts}
+                  />
                 </TableCell>
                 <TableCell className="text-right">
                   {moment(product.createdAt).format("DD-MM-YYYY")}
                 </TableCell>
                 <TableCell className="text-right">
                   {moment(product.updatedAt).format("DD-MM-YYYY")}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant={"ghost"}
+                    onClick={() =>
+                      router.push(
+                        `/products/update-product/${product.productId}`
+                      )
+                    }
+                  >
+                    <Edit size={16} />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -112,3 +136,46 @@ export default function Products() {
     </Card>
   );
 }
+
+const StatusSwitch = ({
+  active,
+  productId,
+  fetchProducts,
+}: {
+  active: boolean;
+  productId: number;
+  fetchProducts: () => void;
+}) => {
+  const [updating, setUpdating] = useState(false);
+
+  const updateProductStatus = async (value: boolean) => {
+    try {
+      setUpdating(true);
+      const response = await axios.patch(
+        `http://localhost:5217/api/Product/UpdateProductActive/${productId}`,
+        value,
+        {
+          headers: {
+            "Content-Type": "application/json", // 🔹 Đảm bảo gửi đúng format JSON
+          },
+        }
+      );
+      toast.success(response.data.message);
+      setUpdating(false);
+      fetchProducts();
+      console.log("Product status updated:", response.data);
+    } catch (error) {
+      toast.error("Error updating product status");
+      setUpdating(false);
+      console.error("Error updating product status:", error);
+    }
+  };
+
+  return (
+    <Switch
+      checked={active}
+      onCheckedChange={updateProductStatus}
+      disabled={updating}
+    />
+  );
+};

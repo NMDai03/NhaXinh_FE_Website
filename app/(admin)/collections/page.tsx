@@ -1,4 +1,4 @@
-import Collections from "@/components/features/collections";
+import Collections from "@/components/features/collections/collections";
 import React from "react";
 
 const page = () => {

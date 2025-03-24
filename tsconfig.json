@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "components/features/products/update-product.tsx"  ],
   "exclude": [
     "node_modules"
   ]

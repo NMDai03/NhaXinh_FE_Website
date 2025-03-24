@@ -1,4 +1,4 @@
-import Materials from "@/components/features/materials";
+import Materials from "@/components/features/materials/materials";
 import React from "react";
 
 const page = () => {

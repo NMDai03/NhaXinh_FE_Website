@@ -13,6 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { nhaxinhService } from "@/util/services/nhaxinhService";
+import { toast } from "react-toastify";
 
 interface ProductForm {
   Name: string;
@@ -29,7 +31,7 @@ interface ProductForm {
   Weight: string;
   AssemblyRequired: boolean;
   Active: boolean;
-  File?: File;
+  Images?: File[];
 }
 
 export default function AddProduct() {
@@ -48,7 +50,7 @@ export default function AddProduct() {
     Weight: "",
     AssemblyRequired: false,
     Active: true,
-    File: undefined,
+    Images: undefined,
   });
 
   const [categories, setCategories] = useState([]);
@@ -94,31 +96,48 @@ export default function AddProduct() {
     setForm((prevForm) => ({
       ...prevForm,
       [name]:
-        type === "checkbox" ? checked : type === "file" ? files?.[0] : value,
+        type === "checkbox"
+          ? checked
+          : type === "file"
+            ? files
+              ? Array.from(files)
+              : []
+            : value, // Chuyển FileList thành mảng File
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const formData = new FormData();
-      Object.entries(form).forEach(([key, value]) => {
-        if (value !== undefined) {
-          formData.append(key, value as string | Blob);
-        }
-      });
-
-      await axios.post(
-        "http://localhost:5217/api/Product/AddProduct",
-        formData,
+      const response = await nhaxinhService.api.productAddProductCreate(
+        {
+          Name: form.Name,
+          Description: form.Description,
+          Price: Number(form.Price),
+          Sold: Number(form.Sold),
+          CategoryId: Number(form.CategoryId),
+          SubCategoryId: Number(form.SubCategoryId),
+          DimensionsLength: Number(form.DimensionsLength),
+          DimensionsWidth: Number(form.DimensionsWidth),
+          DimensionsHeight: Number(form.DimensionsHeight),
+          MaterialId: Number(form.MaterialId),
+          CollectionId: Number(form.CollectionId),
+          Weight: Number(form.Weight),
+          AssemblyRequired: form.AssemblyRequired,
+          Active: form.Active,
+          Images: form.Images,
+        },
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
-      alert("Product added successfully!");
-      router.push("/products");
+
+      if (response.status === 200) {
+        toast.success("Add product successfully");
+        router.push("/products");
+      }
     } catch (error) {
       console.error("Error adding product:", error);
     }
@@ -275,7 +294,7 @@ export default function AddProduct() {
           </div>
           <div className="space-y-2">
             <Label>Image</Label>
-            <Input type="file" name="Image" onChange={handleChange} />
+            <Input type="file" name="Images" onChange={handleChange} />
           </div>
           <div className="space-y-2">
             <Label>Assembly Required</Label>

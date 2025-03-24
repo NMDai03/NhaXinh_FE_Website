@@ -1,4 +1,4 @@
-import Categories from "@/components/features/categories";
+import Categories from "@/components/features/categories/categories";
 import React from "react";
 
 const page = () => {

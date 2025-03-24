@@ -165,7 +165,7 @@ export default function RootLayout({
                 <ModeToggle />
                 <DropdownMenuProfile />
               </header>
-              {children}
+              <div className="max-h-[650px] overflow-y-auto">{children}</div>
             </div>
           </div>
         </ThemeProvider>

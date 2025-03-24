@@ -1,4 +1,4 @@
-import Products from "@/components/features/products";
+import Products from "@/components/features/products/products";
 import Categories from "@/components/features/sub_categories";
 import React from "react";
 

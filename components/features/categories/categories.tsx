@@ -19,6 +19,10 @@ import {
 import { useEffect, useState } from "react";
 
 import axios from "axios";
+import { Button } from "../../ui/button";
+import AddCategoryPopUp from "./add-category";
+import { Edit } from "lucide-react";
+import UpdateCategoryPopUp from "./update-category";
 
 interface Category {
   categoryId: number;
@@ -53,7 +57,8 @@ export default function Categories() {
         <CardDescription>Recent Categories from your store.</CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
+        <AddCategoryPopUp fetchCategories={fetchCategories} />
+        <Table className="mt-4">
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
@@ -63,6 +68,7 @@ export default function Categories() {
               </TableHead>
               <TableHead className="text-right">Created at</TableHead>
               <TableHead className="text-right">Updated at</TableHead>
+              <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -70,7 +76,10 @@ export default function Categories() {
               <TableRow key={category.categoryId}>
                 <TableCell>{category.categoryId}</TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {category.name} <Badge variant="secondary">New</Badge>
+                  {category.name}{" "}
+                  {moment().diff(moment(category.createdAt)) < 3 && (
+                    <Badge variant="secondary">New</Badge>
+                  )}
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
                   {category.description}
@@ -80,6 +89,12 @@ export default function Categories() {
                 </TableCell>
                 <TableCell className="text-right">
                   {moment(category.updatedAt).format("DD-MM-YYYY")}
+                </TableCell>
+                <TableCell>
+                  <UpdateCategoryPopUp
+                    fetchCategories={fetchCategories}
+                    categoryId={category.categoryId}
+                  />
                 </TableCell>
               </TableRow>
             ))}

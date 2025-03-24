@@ -19,32 +19,33 @@ import {
 import { useEffect, useState } from "react";
 
 import axios from "axios";
+import AddMaterialPopUp from "./add-material";
+import UpdateMaterialPopUp from "./update-material";
 
-interface Collections {
-  collectionId: number;
+interface Materials {
+  materialId: number;
   name: string;
   description: string;
-  active: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-export default function Collections() {
-  const [Collections, setCollections] = useState<Collections[]>([]);
-  const fetchCollections = async () => {
+export default function Materials() {
+  const [Materials, setMaterials] = useState<Materials[]>([]);
+  const fetchMaterials = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:5217/api/Collections/GetAllCollections"
+        "http://localhost:5217/api/Material/GetAllMaterials"
       );
-      console.log("Collections:", response.data);
-      setCollections(response.data);
+      console.log("Materials:", response.data);
+      setMaterials(response.data);
     } catch (error) {
-      console.error("Error fetching collections:", error);
+      console.error("Error fetching materials:", error);
     }
   };
   useEffect(() => {
-    console.log("Collections component mounted");
-    fetchCollections();
+    console.log("Materials component mounted");
+    fetchMaterials();
   }, []);
 
   return (
@@ -54,7 +55,8 @@ export default function Collections() {
         <CardDescription>Recent Materials from your store.</CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
+        <AddMaterialPopUp fetchMaterials={fetchMaterials} />
+        <Table className="mt-4">
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
@@ -62,29 +64,35 @@ export default function Collections() {
               <TableHead className="hidden sm:table-cell">
                 Description
               </TableHead>
-              <TableHead className="hidden sm:table-cell">Status</TableHead>
               <TableHead className="text-right">Created at</TableHead>
               <TableHead className="text-right">Updated at</TableHead>
+              <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Collections.map((collection) => (
-              <TableRow key={collection.collectionId}>
-                <TableCell>{collection.collectionId}</TableCell>
+            {Materials.map((material) => (
+              <TableRow key={material.materialId}>
+                <TableCell>{material.materialId}</TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {collection.name} <Badge variant="secondary">New</Badge>
+                  {material.name}{" "}
+                  {moment().diff(moment(material.createdAt)) < 3 && (
+                    <Badge variant="secondary">New</Badge>
+                  )}
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {collection.description}
-                </TableCell>
-                <TableCell className="hidden sm:table-cell">
-                  {collection.active ? "Active" : "Inactive"}
+                  {material.description}
                 </TableCell>
                 <TableCell className="text-right">
-                  {moment(collection.createdAt).format("DD-MM-YYYY")}
+                  {moment(material.createdAt).format("DD-MM-YYYY")}
                 </TableCell>
                 <TableCell className="text-right">
-                  {moment(collection.updatedAt).format("DD-MM-YYYY")}
+                  {moment(material.updatedAt).format("DD-MM-YYYY")}
+                </TableCell>
+                <TableCell>
+                  <UpdateMaterialPopUp
+                    materialId={material.materialId}
+                    fetchMaterials={fetchMaterials}
+                  />
                 </TableCell>
               </TableRow>
             ))}
