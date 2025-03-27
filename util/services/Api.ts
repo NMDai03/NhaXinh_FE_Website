@@ -634,7 +634,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     categoriesGetAllCategoryList: (params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Categories/GetAllCategory`,
         method: "GET",
         secure: true,
@@ -739,7 +739,7 @@ export class Api<SecurityDataType extends unknown> {
       id: number,
       params: RequestParams = {}
     ) =>
-      this.http.request({
+      this.http.request<void, any>({
         path: `/api/Collections/GetCollectionById/${id}`,
         method: "GET",
         secure: true,
@@ -805,7 +805,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request({
+      this.http.request<void, any>({
         path: `/api/Collections/UpdateCollectionActive`,
         method: "PUT",
         query: query,
@@ -920,7 +920,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     materialGetMaterialByIdDetail: (id: number, params: RequestParams = {}) =>
-      this.http.request({
+      this.http.request<void, any>({
         path: `/api/Material/GetMaterialById/${id}`,
         method: "GET",
         secure: true,
@@ -1497,7 +1497,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/SubCategory/GetCategoryById`,
         method: "GET",
         query: query,
@@ -1584,7 +1584,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     userGetAllUserList: (params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/User/GetAllUser`,
         method: "GET",
         secure: true,

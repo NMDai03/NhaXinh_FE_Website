@@ -19,6 +19,9 @@ import {
 import { useEffect, useState } from "react";
 
 import axios from "axios";
+import AddSubCategoryPopUp from "./add-subcategory";
+import UpdateCategoryPopUp from "../categories/update-category";
+import UpdateSubCategoryPopUp from "./update-subcategory";
 
 interface SubCategory {
   subCategoryId: number;
@@ -29,32 +32,33 @@ interface SubCategory {
   updatedAt: string;
 }
 
-export default function Categories() {
-  const [Categories, setCategories] = useState<SubCategory[]>([]);
-  const fetchCategories = async () => {
+export default function SubCategories() {
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const fetchSubCategories = async () => {
     try {
       const response = await axios.get(
         "http://localhost:5217/api/SubCategory/GetAllCategory"
       );
-      console.log("Categories:", response.data);
-      setCategories(response.data);
+      console.log("SubCategories:", response.data);
+      setSubCategories(response.data);
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      console.error("Error fetching SubCategories:", error);
     }
   };
   useEffect(() => {
-    console.log("Categories component mounted");
-    fetchCategories();
+    console.log("SubCategories component mounted");
+    fetchSubCategories();
   }, []);
 
   return (
     <Card>
       <CardHeader className="px-7">
-        <CardTitle>Sub Categories</CardTitle>
-        <CardDescription>Recent Categories from your store.</CardDescription>
+        <CardTitle>Sub SubCategories</CardTitle>
+        <CardDescription>Recent SubCategories from your store.</CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
+        <AddSubCategoryPopUp fetchSubCategories={fetchSubCategories} />
+        <Table className="mt-4">
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
@@ -67,10 +71,11 @@ export default function Categories() {
               </TableHead>
               <TableHead className="text-right">Created at</TableHead>
               <TableHead className="text-right">Updated at</TableHead>
+              <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Categories.map((category) => (
+            {subCategories.map((category) => (
               <TableRow key={category.subCategoryId}>
                 <TableCell>{category.subCategoryId}</TableCell>
                 <TableCell className="hidden sm:table-cell">
@@ -87,6 +92,12 @@ export default function Categories() {
                 </TableCell>
                 <TableCell className="text-right">
                   {moment(category.updatedAt).format("DD-MM-YYYY")}
+                </TableCell>
+                <TableCell className="text-right">
+                  <UpdateSubCategoryPopUp
+                    id={category.subCategoryId}
+                    fetchSubCategories={fetchSubCategories}
+                  />
                 </TableCell>
               </TableRow>
             ))}
