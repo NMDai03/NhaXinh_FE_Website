@@ -23,11 +23,15 @@ import { Button } from "../../ui/button";
 import AddCategoryPopUp from "./add-category";
 import { Edit } from "lucide-react";
 import UpdateCategoryPopUp from "./update-category";
+import { toast } from "react-toastify";
+import { nhaxinhService } from "@/util/services/nhaxinhService";
+import { Switch } from "@/components/ui/switch";
 
 interface Category {
   categoryId: number;
   name: string;
   description: string;
+  active: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -66,6 +70,7 @@ export default function Categories() {
               <TableHead className="hidden sm:table-cell">
                 Description
               </TableHead>
+              <TableHead className="hidden sm:table-cell">Status</TableHead>
               <TableHead className="text-right">Created at</TableHead>
               <TableHead className="text-right">Updated at</TableHead>
               <TableHead>Action</TableHead>
@@ -83,6 +88,13 @@ export default function Categories() {
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
                   {category.description}
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  <StatusSwitch
+                    active={category.active}
+                    categoryId={category.categoryId}
+                    fetchCategories={fetchCategories}
+                  />
                 </TableCell>
                 <TableCell className="text-right">
                   {moment(category.createdAt).format("DD-MM-YYYY")}
@@ -104,3 +116,46 @@ export default function Categories() {
     </Card>
   );
 }
+
+const StatusSwitch = ({
+  active,
+  categoryId,
+  fetchCategories,
+}: {
+  active: boolean;
+  categoryId: number;
+  fetchCategories: () => void;
+}) => {
+  const [updating, setUpdating] = useState(false);
+
+  const updateCategoryStatus = async (value: boolean) => {
+    try {
+      setUpdating(true);
+      const response =
+        await nhaxinhService.api.categoriesUpdateCategoryActiveUpdate({
+          id: categoryId,
+          active: value,
+        });
+      if (response.data) {
+        toast.success("Update category status successfully");
+      } else {
+        toast.error("Update category status failed");
+      }
+      setUpdating(false);
+      fetchCategories();
+      console.log("Category status updated:", response.data);
+    } catch (error) {
+      toast.error("Error updating category status");
+      setUpdating(false);
+      console.error("Error updating category status:", error);
+    }
+  };
+
+  return (
+    <Switch
+      checked={active}
+      onCheckedChange={updateCategoryStatus}
+      disabled={updating}
+    />
+  );
+};

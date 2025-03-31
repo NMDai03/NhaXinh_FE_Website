@@ -17,9 +17,11 @@ interface OrderInfo {
   orderDetailId: number;
   orderId: string;
   productId: number;
-  variationId: number;
   quantity: number;
   price: number;
+  productName: string;
+  variationColor: string;
+  variationImage: string;
 }
 
 interface Order {
@@ -61,19 +63,31 @@ export default function OrderDetailSheet({
           <h3 className="font-semibold text-lg">Order Items</h3>
           <div className="space-y-4 mt-2">
             {order.orderInfo.map((item) => (
-              <div key={item.orderDetailId} className="border p-4 rounded-lg">
-                <p>
-                  <strong>Product ID:</strong> {item.productId}
-                </p>
-                <p>
-                  <strong>Variation ID:</strong> {item.variationId}
-                </p>
-                <p>
-                  <strong>Quantity:</strong> {item.quantity}
-                </p>
-                <p>
-                  <strong>Price:</strong> {item.price} VND
-                </p>
+              <div
+                key={item.orderDetailId}
+                className="border p-4 rounded-lg flex items-center gap-4"
+              >
+                <Image
+                  src={item.variationImage}
+                  alt={item.productName}
+                  width={80}
+                  height={80}
+                  className="rounded-lg"
+                />
+                <div>
+                  <p>
+                    <strong>Product:</strong> {item.productName}
+                  </p>
+                  <p>
+                    <strong>Color:</strong> {item.variationColor}
+                  </p>
+                  <p>
+                    <strong>Quantity:</strong> {item.quantity}
+                  </p>
+                  <p>
+                    <strong>Price:</strong> {item.price} VND
+                  </p>
+                </div>
               </div>
             ))}
           </div>

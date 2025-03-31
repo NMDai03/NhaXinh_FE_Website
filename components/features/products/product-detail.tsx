@@ -30,6 +30,11 @@ interface Product {
   active: boolean;
   createdAt: string;
   images: { imageUrl: string; isPrimary: boolean }[];
+  variations: {
+    variationId: number;
+    color: string;
+    imageUrl: string;
+  }[];
 }
 
 export default function ProductDetailSheet({
@@ -112,6 +117,28 @@ export default function ProductDetailSheet({
                 <strong>Trạng thái:</strong>{" "}
                 {product.active ? "Đang bán" : "Ngừng bán"}
               </p>
+              {product.variations && product.variations.length > 0 && (
+                <div className="mt-2">
+                  <p className="font-semibold">Available Variations:</p>
+                  <div className="flex gap-2 mt-2">
+                    {product.variations.map((variation) => (
+                      <div
+                        key={variation.variationId}
+                        className="border p-2 rounded-lg text-center"
+                      >
+                        <Image
+                          src={variation.imageUrl}
+                          alt={variation.color}
+                          width={50}
+                          height={50}
+                          className="rounded-lg"
+                        />
+                        <p className="text-sm">{variation.color}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         ) : (

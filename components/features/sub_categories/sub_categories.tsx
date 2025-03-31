@@ -22,6 +22,9 @@ import axios from "axios";
 import AddSubCategoryPopUp from "./add-subcategory";
 import UpdateCategoryPopUp from "../categories/update-category";
 import UpdateSubCategoryPopUp from "./update-subcategory";
+import { toast } from "react-toastify";
+import { nhaxinhService } from "@/util/services/nhaxinhService";
+import { Switch } from "@/components/ui/switch";
 
 interface SubCategory {
   subCategoryId: number;
@@ -30,6 +33,7 @@ interface SubCategory {
   categoryName: string;
   createdAt: string;
   updatedAt: string;
+  active: boolean;
 }
 
 export default function SubCategories() {
@@ -69,6 +73,7 @@ export default function SubCategories() {
               <TableHead className="hidden sm:table-cell">
                 Category Name
               </TableHead>
+              <TableHead className="hidden sm:table-cell">Status</TableHead>
               <TableHead className="text-right">Created at</TableHead>
               <TableHead className="text-right">Updated at</TableHead>
               <TableHead className="text-right">Action</TableHead>
@@ -86,6 +91,13 @@ export default function SubCategories() {
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
                   {category.categoryName}
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  <StatusSwitch
+                    active={category.active}
+                    categoryId={category.subCategoryId}
+                    fetchCategories={fetchSubCategories}
+                  />
                 </TableCell>
                 <TableCell className="text-right">
                   {moment(category.createdAt).format("DD-MM-YYYY")}
@@ -107,3 +119,46 @@ export default function SubCategories() {
     </Card>
   );
 }
+
+const StatusSwitch = ({
+  active,
+  categoryId,
+  fetchCategories,
+}: {
+  active: boolean;
+  categoryId: number;
+  fetchCategories: () => void;
+}) => {
+  const [updating, setUpdating] = useState(false);
+
+  const updateCategoryStatus = async (value: boolean) => {
+    try {
+      setUpdating(true);
+      const response =
+        await nhaxinhService.api.subCategoryUpdateSubCategoryActiveUpdate({
+          id: categoryId,
+          active: value,
+        });
+      if (response.data) {
+        toast.success("Update sub-category status successfully");
+      } else {
+        toast.error("Update sub-category status failed");
+      }
+      setUpdating(false);
+      fetchCategories();
+      console.log("Sub-category status updated:", response.data);
+    } catch (error) {
+      toast.error("Error updating sub-category status");
+      setUpdating(false);
+      console.error("Error updating sub-category status:", error);
+    }
+  };
+
+  return (
+    <Switch
+      checked={active}
+      onCheckedChange={updateCategoryStatus}
+      disabled={updating}
+    />
+  );
+};

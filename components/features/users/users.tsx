@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { nhaxinhService } from "@/util/services/nhaxinhService";
 import AssignRolePopUp from "./assign-role";
 import DeleteUserPopUp from "./delete-user";
+import { Badge } from "@/components/ui/badge";
 
 interface User {
   userId: number;
@@ -30,6 +31,19 @@ interface User {
   createdAt: string;
   updatedAt: string;
 }
+
+const UserRoleBadge = ({ role }: { role: string }) => {
+  switch (role) {
+    case "admin":
+      return <Badge className="bg-green-200">{role}</Badge>;
+    case "employee":
+      return <Badge className="bg-yellow-200">{role}</Badge>;
+    case "customer":
+      return <Badge className="bg-blue-200">{role}</Badge>;
+    default:
+      return <Badge className="bg-gray-200">{role}</Badge>;
+  }
+};
 
 export default function Users() {
   const [Users, setUsers] = useState<User[]>([]);
@@ -77,8 +91,8 @@ export default function Users() {
                 <TableCell className="hidden sm:table-cell">
                   {user.email}
                 </TableCell>
-                <TableCell className="hidden sm:table-cell">
-                  {user.role}
+                <TableCell className="hidden sm:table-cell uppercase">
+                  <UserRoleBadge role={user.role} />
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
                   {user.active ? "Active" : "Inactive"}
@@ -95,7 +109,6 @@ export default function Users() {
                     fetchUsers={fetchUsers}
                     role={user.role}
                   />
-                  <DeleteUserPopUp id={user.userId} fetchUsers={fetchUsers} />
                 </TableCell>
               </TableRow>
             ))}
