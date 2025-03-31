@@ -37,6 +37,7 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 import AdminSearch from "@/components/features/admin-search";
 import DropdownMenuProfile from "@/components/features/dropdown_menu";
 import SidebarMenu from "./_components/sidebar";
+import Image from "next/image";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -75,7 +76,7 @@ export default function RootLayout({
                     href="/"
                     className="flex items-center gap-2 font-semibold"
                   >
-                    <img
+                    <Image
                       src="/image/nhaxinhlogo.png"
                       alt="Nha Xinh"
                       className="h-6 w-6"

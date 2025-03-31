@@ -20,7 +20,6 @@ interface ProductForm {
   Name: string;
   Description: string;
   Price: string;
-  Sold: string;
   CategoryId: string;
   SubCategoryId: string;
   DimensionsLength: string;
@@ -39,7 +38,6 @@ export default function AddProduct() {
     Name: "",
     Description: "",
     Price: "",
-    Sold: "",
     CategoryId: "",
     SubCategoryId: "",
     DimensionsLength: "",
@@ -114,7 +112,6 @@ export default function AddProduct() {
           Name: form.Name,
           Description: form.Description,
           Price: Number(form.Price),
-          Sold: Number(form.Sold),
           CategoryId: Number(form.CategoryId),
           SubCategoryId: Number(form.SubCategoryId),
           DimensionsLength: Number(form.DimensionsLength),
@@ -166,10 +163,6 @@ export default function AddProduct() {
           <div className="space-y-2">
             <Label>Price</Label>
             <Input name="Price" value={form.Price} onChange={handleChange} />
-          </div>
-          <div className="space-y-2">
-            <Label>Sold</Label>
-            <Input name="Sold" value={form.Sold} onChange={handleChange} />
           </div>
 
           <div className="space-y-2">

@@ -132,7 +132,7 @@ const UpdateSubCategoryPopUp = ({
             <DialogHeader>
               <DialogTitle>Update category</DialogTitle>
               <DialogDescription>
-                Fill all the fields. Click save when you're done.
+                {"Fill all the fields. Click save when you're done."}
               </DialogDescription>
             </DialogHeader>
             <div className="grid py-4 space-y-8">
