@@ -81,9 +81,24 @@ export interface CollectionAddDTO {
   description?: string | null;
 }
 
+export interface DeviceToken {
+  /** @format int32 */
+  id?: number;
+  /** @format int32 */
+  userId?: number;
+  deviceToken1?: string | null;
+  deviceType?: string | null;
+  /** @format date-time */
+  createdAt?: string | null;
+  /** @format date-time */
+  updatedAt?: string | null;
+  user?: User;
+}
+
 export interface LoginDTO {
   email?: string | null;
   password?: string | null;
+  fcmToken?: string | null;
 }
 
 export interface Material {
@@ -142,6 +157,7 @@ export interface Order {
   status?: string | null;
   /** @format date-time */
   createdAt?: string | null;
+  paymentMethod?: string | null;
   user?: User;
   orderDetails?: OrderDetail[] | null;
   payments?: Payment[] | null;
@@ -168,7 +184,6 @@ export interface Payment {
   /** @format int32 */
   paymentId?: number;
   orderId?: string | null;
-  paymentMethod?: string | null;
   status?: string | null;
   transactionId?: string | null;
   /** @format date-time */
@@ -326,6 +341,7 @@ export interface User {
   active?: boolean;
   avatarUrl?: string | null;
   carts?: Cart[] | null;
+  deviceTokens?: DeviceToken[] | null;
   messageReceivers?: Message[] | null;
   messageSenders?: Message[] | null;
   notifications?: Notification[] | null;
@@ -618,7 +634,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     cartDeleteCartItemDelete: (cartId: number, params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Cart/DeleteCartItem/${cartId}`,
         method: "DELETE",
         secure: true,
@@ -676,7 +692,7 @@ export class Api<SecurityDataType extends unknown> {
       data: CategoryAddDTO,
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Categories/CreateCategory`,
         method: "POST",
         body: data,
@@ -701,7 +717,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Categories/UpdateCategory`,
         method: "PUT",
         query: query,
@@ -714,13 +730,37 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * No description
      *
+     * @tags Categories
+     * @name CategoriesUpdateCategoryActiveUpdate
+     * @request PUT:/api/Categories/UpdateCategoryActive
+     * @secure
+     */
+    categoriesUpdateCategoryActiveUpdate: (
+      query?: {
+        /** @format int32 */
+        id?: number;
+        active?: boolean;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/Categories/UpdateCategoryActive`,
+        method: "PUT",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags Collections
      * @name CollectionsGetAllCollectionsList
      * @request GET:/api/Collections/GetAllCollections
      * @secure
      */
     collectionsGetAllCollectionsList: (params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Collections/GetAllCollections`,
         method: "GET",
         secure: true,
@@ -739,7 +779,7 @@ export class Api<SecurityDataType extends unknown> {
       id: number,
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Collections/GetCollectionById/${id}`,
         method: "GET",
         secure: true,
@@ -758,7 +798,7 @@ export class Api<SecurityDataType extends unknown> {
       data: CollectionAddDTO,
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Collections/CreateCollection`,
         method: "POST",
         body: data,
@@ -780,7 +820,7 @@ export class Api<SecurityDataType extends unknown> {
       data: CollectionAddDTO,
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Collections/UpdateCollection/${id}`,
         method: "PUT",
         body: data,
@@ -805,7 +845,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Collections/UpdateCollectionActive`,
         method: "PUT",
         query: query,
@@ -822,7 +862,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     loginLoginCreate: (data: LoginDTO, params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Login/Login`,
         method: "POST",
         body: data,
@@ -843,7 +883,7 @@ export class Api<SecurityDataType extends unknown> {
       data: RegisterDTO,
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Login/RegisterForCustomer`,
         method: "POST",
         body: data,
@@ -864,7 +904,7 @@ export class Api<SecurityDataType extends unknown> {
       data: VerifyOTPDTO,
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Login/VerifyOTPForCustomer`,
         method: "POST",
         body: data,
@@ -887,8 +927,31 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Login/ResetPassword`,
+        method: "POST",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Login
+     * @name LoginLoginGoogleCreate
+     * @request POST:/api/Login/LoginGoogle
+     * @secure
+     */
+    loginLoginGoogleCreate: (
+      query?: {
+        id_token?: string;
+        fcmToken?: string;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/Login/LoginGoogle`,
         method: "POST",
         query: query,
         secure: true,
@@ -904,7 +967,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     materialGetAllMaterialsList: (params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Material/GetAllMaterials`,
         method: "GET",
         secure: true,
@@ -920,7 +983,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     materialGetMaterialByIdDetail: (id: number, params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Material/GetMaterialById/${id}`,
         method: "GET",
         secure: true,
@@ -962,12 +1025,84 @@ export class Api<SecurityDataType extends unknown> {
       data: MaterialAddDTO,
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Material/UpdateMaterial/${id}`,
         method: "PUT",
         body: data,
         secure: true,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Material
+     * @name MaterialUpdateMaterialActiveUpdate
+     * @request PUT:/api/Material/UpdateMaterialActive
+     * @secure
+     */
+    materialUpdateMaterialActiveUpdate: (
+      query?: {
+        /** @format int32 */
+        id?: number;
+        active?: boolean;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/Material/UpdateMaterialActive`,
+        method: "PUT",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Notification
+     * @name NotificationMarkNotificationAsReadCreate
+     * @request POST:/api/Notification/MarkNotificationAsRead
+     * @secure
+     */
+    notificationMarkNotificationAsReadCreate: (
+      query?: {
+        /** @format int32 */
+        notificationId?: number;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/Notification/MarkNotificationAsRead`,
+        method: "POST",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Notification
+     * @name NotificationSendNotificationToCustomerCreate
+     * @request POST:/api/Notification/SendNotificationToCustomer
+     * @secure
+     */
+    notificationSendNotificationToCustomerCreate: (
+      query?: {
+        /** @format int32 */
+        userId?: number;
+        title?: string;
+        body?: string;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/Notification/SendNotificationToCustomer`,
+        method: "POST",
+        query: query,
+        secure: true,
         ...params,
       }),
 
@@ -983,10 +1118,11 @@ export class Api<SecurityDataType extends unknown> {
       query?: {
         Address?: string;
         Note?: string;
+        method?: string;
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Order/CreateOrderFromCart`,
         method: "POST",
         query: query,
@@ -1009,7 +1145,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Order/UpdateOrderStatus`,
         method: "POST",
         query: query,
@@ -1026,9 +1162,85 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     orderGetOrderByUserIdList: (params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Order/GetOrderByUserId`,
         method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Order
+     * @name OrderGetOrderByIdList
+     * @request GET:/api/Order/GetOrderById
+     * @secure
+     */
+    orderGetOrderByIdList: (
+      query?: {
+        id?: string;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/Order/GetOrderById`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Order
+     * @name OrderGetAllOrderList
+     * @request GET:/api/Order/GetAllOrder
+     * @secure
+     */
+    orderGetAllOrderList: (params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Order/GetAllOrder`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Order
+     * @name OrderGetUserOrderHistorysList
+     * @request GET:/api/Order/GetUserOrderHistorys
+     * @secure
+     */
+    orderGetUserOrderHistorysList: (params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Order/GetUserOrderHistorys`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Payment
+     * @name PaymentCreatePaymentCreate
+     * @request POST:/api/Payment/CreatePayment
+     * @secure
+     */
+    paymentCreatePaymentCreate: (
+      query?: {
+        IdOrder?: string;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/Payment/CreatePayment`,
+        method: "POST",
+        query: query,
         secure: true,
         ...params,
       }),
@@ -1047,8 +1259,6 @@ export class Api<SecurityDataType extends unknown> {
         Description?: string;
         /** @format double */
         Price?: number;
-        /** @format int32 */
-        Sold?: number;
         /** @format int32 */
         CategoryId?: number;
         /** @format int32 */
@@ -1073,7 +1283,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Product/AddProduct`,
         method: "POST",
         body: data,
@@ -1091,7 +1301,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     productGetProductByIdDetail: (id: number, params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Product/GetProductById/${id}`,
         method: "GET",
         secure: true,
@@ -1115,7 +1325,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Product/GetAllProducts`,
         method: "GET",
         query: query,
@@ -1137,8 +1347,6 @@ export class Api<SecurityDataType extends unknown> {
         Description?: string;
         /** @format double */
         Price?: number;
-        /** @format int32 */
-        Sold?: number;
         /** @format int32 */
         CategoryId?: number;
         /** @format int32 */
@@ -1167,7 +1375,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Product/UpdateProduct`,
         method: "PUT",
         query: query,
@@ -1190,7 +1398,7 @@ export class Api<SecurityDataType extends unknown> {
       data: boolean,
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Product/UpdateProductActive/${id}`,
         method: "PATCH",
         body: data,
@@ -1211,7 +1419,7 @@ export class Api<SecurityDataType extends unknown> {
       data: ProductSearchDTO,
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Product/SearchProduct`,
         method: "POST",
         body: data,
@@ -1243,7 +1451,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Product/FilterProductWithPriceAndMaterial`,
         method: "GET",
         query: query,
@@ -1260,7 +1468,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     productGetTop6ProductByTimeDesList: (params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Product/GetTop6ProductByTimeDes`,
         method: "GET",
         secure: true,
@@ -1286,13 +1494,29 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Product/UploadModel3DFile`,
         method: "PUT",
         query: query,
         body: data,
         secure: true,
         type: ContentType.FormData,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Product
+     * @name ProductGetProductToDispalyList
+     * @request GET:/api/Product/GetProductToDispaly
+     * @secure
+     */
+    productGetProductToDispalyList: (params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Product/GetProductToDispaly`,
+        method: "GET",
+        secure: true,
         ...params,
       }),
 
@@ -1394,7 +1618,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Profile/UpdateProfile`,
         method: "POST",
         body: data,
@@ -1418,7 +1642,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Profile/UpdateProfileImage`,
         method: "POST",
         body: data,
@@ -1436,7 +1660,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     profileGetCurrentUserProfileList: (params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Profile/GetCurrentUserProfile`,
         method: "GET",
         secure: true,
@@ -1458,8 +1682,57 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/Profile/UpdateProfilePassword`,
+        method: "POST",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Review
+     * @name ReviewGetReviewByProductIdList
+     * @request GET:/api/Review/GetReviewByProductId
+     * @secure
+     */
+    reviewGetReviewByProductIdList: (
+      query?: {
+        /** @format int32 */
+        id?: number;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/Review/GetReviewByProductId`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Review
+     * @name ReviewAddReviewCreate
+     * @request POST:/api/Review/AddReview
+     * @secure
+     */
+    reviewAddReviewCreate: (
+      query?: {
+        /** @format int32 */
+        productId?: number;
+        comment?: string;
+        /** @format int32 */
+        rating?: number;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/Review/AddReview`,
         method: "POST",
         query: query,
         secure: true,
@@ -1475,7 +1748,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     subCategoryGetAllCategoryList: (params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/SubCategory/GetAllCategory`,
         method: "GET",
         secure: true,
@@ -1517,7 +1790,7 @@ export class Api<SecurityDataType extends unknown> {
       data: SubCategoryAddDTO,
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/SubCategory/CreateCategory`,
         method: "POST",
         body: data,
@@ -1542,7 +1815,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/SubCategory/UpdateCategory`,
         method: "PUT",
         query: query,
@@ -1567,9 +1840,33 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/SubCategory/GetSubCategoryByCategoryId`,
         method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags SubCategory
+     * @name SubCategoryUpdateSubCategoryActiveUpdate
+     * @request PUT:/api/SubCategory/UpdateSubCategoryActive
+     * @secure
+     */
+    subCategoryUpdateSubCategoryActiveUpdate: (
+      query?: {
+        /** @format int32 */
+        id?: number;
+        active?: boolean;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/SubCategory/UpdateSubCategoryActive`,
+        method: "PUT",
         query: query,
         secure: true,
         ...params,
@@ -1606,7 +1903,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/User/GetUserById`,
         method: "GET",
         query: query,
@@ -1629,7 +1926,7 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/User/DeleteUserById`,
         method: "DELETE",
         query: query,
@@ -1646,7 +1943,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     userCurrentUserList: (params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/User/CurrentUser`,
         method: "GET",
         secure: true,
@@ -1669,33 +1966,81 @@ export class Api<SecurityDataType extends unknown> {
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/api/User/AssignRole`,
         method: "POST",
         query: query,
         secure: true,
         ...params,
       }),
-  };
-  createPayment = {
+
     /**
      * No description
      *
-     * @tags Payment
-     * @name CreatePaymentList
-     * @request GET:/create-payment
+     * @tags Wishlist
+     * @name WishlistAddWishlistCreate
+     * @request POST:/api/Wishlist/AddWishlist
      * @secure
      */
-    createPaymentList: (
+    wishlistAddWishlistCreate: (
       query?: {
-        IdOrder?: string;
+        /** @format int32 */
+        prodcutId?: number;
       },
       params: RequestParams = {}
     ) =>
-      this.http.request<void, any>({
-        path: `/create-payment`,
-        method: "GET",
+      this.http.request({
+        path: `/api/Wishlist/AddWishlist`,
+        method: "POST",
         query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Wishlist
+     * @name WishlistDeleteWishlistDelete
+     * @request DELETE:/api/Wishlist/DeleteWishlist/{id}
+     * @secure
+     */
+    wishlistDeleteWishlistDelete: (id: number, params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Wishlist/DeleteWishlist/${id}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Wishlist
+     * @name WishlistGetWishlistByIdDetail
+     * @request GET:/api/Wishlist/GetWishlistById/{id}
+     * @secure
+     */
+    wishlistGetWishlistByIdDetail: (id: number, params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Wishlist/GetWishlistById/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Wishlist
+     * @name WishlistGetAllWishlistsByuserIdList
+     * @request GET:/api/Wishlist/GetAllWishlistsByuserId
+     * @secure
+     */
+    wishlistGetAllWishlistsByuserIdList: (params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Wishlist/GetAllWishlistsByuserId`,
+        method: "GET",
         secure: true,
         ...params,
       }),
@@ -1710,7 +2055,7 @@ export class Api<SecurityDataType extends unknown> {
      * @secure
      */
     payment: (params: RequestParams = {}) =>
-      this.http.request<void, any>({
+      this.http.request({
         path: `/payment`,
         method: "GET",
         secure: true,

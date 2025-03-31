@@ -1,4 +1,4 @@
-import Orders from "@/components/features/orders";
+import Orders from "@/components/features/orders/orders";
 
 export default function Dashboard() {
   return (

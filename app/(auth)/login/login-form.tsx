@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/util/context/AuthContext";
 
 export function LoginForm({
   className,
@@ -20,6 +21,7 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { login } = useAuth();
 
   const router = useRouter();
   const handleSubmit = async (event: React.FormEvent) => {
@@ -38,7 +40,7 @@ export function LoginForm({
       const token = response.data;
 
       if (token) {
-        localStorage.setItem("authToken", token);
+        login(token);
         alert("Login successful!");
         router.push("/");
         // Optionally, redirect the user or handle success

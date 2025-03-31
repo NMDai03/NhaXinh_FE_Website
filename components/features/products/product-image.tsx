@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import { Image } from "antd";
 
 const ProductImage = ({ product }: { product: any }) => {
   const [imageSrc, setImageSrc] = useState("/image/nhaxinhlogo.png");
@@ -16,13 +16,9 @@ const ProductImage = ({ product }: { product: any }) => {
   console.log(imageSrc, product);
 
   return (
-    <Image
-      src={imageSrc}
-      alt={product.name || "No name"}
-      width={50}
-      height={50}
-      onError={() => setImageSrc("/image/nhaxinhlogo.png")} // Nếu lỗi ảnh, chuyển sang ảnh mặc định
-    />
+    <Image.PreviewGroup items={product.images.map((i: any) => i.imageUrl)}>
+      <Image width={100} src={imageSrc} />
+    </Image.PreviewGroup>
   );
 };
 
