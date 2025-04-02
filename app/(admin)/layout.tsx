@@ -78,6 +78,8 @@ export default function RootLayout({
                   >
                     <Image
                       src="/image/nhaxinhlogo.png"
+                      width={100}
+                      height={100}
                       alt="Nha Xinh"
                       className="h-6 w-6"
                     />
