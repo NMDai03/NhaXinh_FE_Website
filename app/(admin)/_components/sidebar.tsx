@@ -18,7 +18,12 @@ import { useAuth } from "@/util/context/AuthContext";
 import { useEffect, useState } from "react";
 
 const menuItems = [
-  { name: "Dashboard", href: "/", icon: Home, role: ["admin", "employee"] },
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+    icon: Home,
+    role: ["admin", "employee"],
+  },
   {
     name: "Orders",
     href: "/orders",

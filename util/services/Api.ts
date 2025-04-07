@@ -557,6 +557,22 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * No description
      *
+     * @tags Admin
+     * @name AdminGetDashboardList
+     * @request GET:/api/Admin/GetDashboard
+     * @secure
+     */
+    adminGetDashboardList: (params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Admin/GetDashboard`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags Cart
      * @name CartAddToCartCreate
      * @request POST:/api/Cart/AddToCart
@@ -1102,6 +1118,22 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/Notification/SendNotificationToCustomer`,
         method: "POST",
         query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Notification
+     * @name NotificationGetNotificationByUserIdList
+     * @request GET:/api/Notification/GetNotificationByUserId
+     * @secure
+     */
+    notificationGetNotificationByUserIdList: (params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Notification/GetNotificationByUserId`,
+        method: "GET",
         secure: true,
         ...params,
       }),
@@ -1915,29 +1947,6 @@ export class Api<SecurityDataType extends unknown> {
      * No description
      *
      * @tags User
-     * @name UserDeleteUserByIdDelete
-     * @request DELETE:/api/User/DeleteUserById
-     * @secure
-     */
-    userDeleteUserByIdDelete: (
-      query?: {
-        /** @format int32 */
-        id?: number;
-      },
-      params: RequestParams = {}
-    ) =>
-      this.http.request({
-        path: `/api/User/DeleteUserById`,
-        method: "DELETE",
-        query: query,
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags User
      * @name UserCurrentUserList
      * @request GET:/api/User/CurrentUser
      * @secure
@@ -1968,6 +1977,30 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request({
         path: `/api/User/AssignRole`,
+        method: "POST",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserUpdateUserActiveCreate
+     * @request POST:/api/User/UpdateUserActive
+     * @secure
+     */
+    userUpdateUserActiveCreate: (
+      query?: {
+        /** @format int32 */
+        id?: number;
+        active?: boolean;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/User/UpdateUserActive`,
         method: "POST",
         query: query,
         secure: true,

@@ -20,6 +20,8 @@ import { nhaxinhService } from "@/util/services/nhaxinhService";
 import AssignRolePopUp from "./assign-role";
 import DeleteUserPopUp from "./delete-user";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "react-toastify";
+import { Switch } from "@/components/ui/switch";
 
 interface User {
   userId: number;
@@ -95,7 +97,11 @@ export default function Users() {
                   <UserRoleBadge role={user.role} />
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {user.active ? "Active" : "Inactive"}
+                  <StatusSwitch
+                    active={user.active}
+                    userId={user.userId}
+                    fetchUsers={fetchUsers}
+                  />
                 </TableCell>
                 <TableCell className="text-right">
                   {moment(user.createdAt).format("DD-MM-YYYY")}
@@ -118,3 +124,45 @@ export default function Users() {
     </Card>
   );
 }
+
+const StatusSwitch = ({
+  active,
+  userId,
+  fetchUsers,
+}: {
+  active: boolean;
+  userId: number;
+  fetchUsers: () => void;
+}) => {
+  const [updating, setUpdating] = useState(false);
+
+  const updateUserStatus = async (value: boolean) => {
+    try {
+      setUpdating(true);
+      const response = await nhaxinhService.api.userUpdateUserActiveCreate({
+        id: userId,
+        active: value,
+      });
+      if (response.data) {
+        toast.success("Update User status successfully");
+      } else {
+        toast.error("Update User status failed");
+      }
+    } catch (error) {
+      toast.error("Error updating User status");
+      setUpdating(false);
+      console.error("Error updating User status:", error);
+    } finally {
+      setUpdating(false);
+      fetchUsers();
+    }
+  };
+
+  return (
+    <Switch
+      checked={active}
+      onCheckedChange={updateUserStatus}
+      disabled={updating}
+    />
+  );
+};
