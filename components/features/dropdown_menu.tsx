@@ -11,9 +11,11 @@ import {
 import { Button } from "../ui/button";
 import { CircleUser } from "lucide-react";
 import { useAuth } from "@/util/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 const DropdownMenuProfile = () => {
-  const { currentUser, logout } = useAuth();
+  const { logout } = useAuth();
+  const route = useRouter();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,8 +27,9 @@ const DropdownMenuProfile = () => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Settings</DropdownMenuItem>
-        <DropdownMenuItem>Support</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => route.push("/profile")}>
+          My Profile
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
