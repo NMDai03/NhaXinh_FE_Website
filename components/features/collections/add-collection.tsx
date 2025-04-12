@@ -55,7 +55,6 @@ const AddCollectionPopUp = ({
           name: values.name,
           description: values.description,
         });
-      console.log(response);
       if (response.status == 201) {
         toast.success("Add collection successfully");
         fetchCollections();

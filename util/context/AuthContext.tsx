@@ -9,6 +9,7 @@ import {
 
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { nhaxinhService } from "../services/nhaxinhService";
 
 interface AuthContextType {
   currentUser: any;
@@ -37,14 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (token) {
       try {
-        const response = await axios.get(
-          "http://localhost:5217/api/User/CurrentUser",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await nhaxinhService.api.userCurrentUserList();
         setCurrentUser(response.data);
         setIsAuthenticated(true);
       } catch (error) {

@@ -13,8 +13,7 @@ export const attachCommonErrorInterceptor: AttachInterceptorFunction = (
     (response) => response,
     (error) => {
       if (skipToastForEndpoints.includes(error.config.url!))
-        console.log(error?.response?.data);
-      toast.error(error?.response?.data);
+        toast.error(error?.response?.data);
       return Promise.reject(error);
     }
   );

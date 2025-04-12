@@ -50,7 +50,6 @@ const AddMaterialPopUp = ({ fetchMaterials }: { fetchMaterials: any }) => {
         name: values.name,
         description: values.description,
       });
-      console.log(response);
       if (response.status == 201) {
         toast.success("Add material successfully");
         fetchMaterials();

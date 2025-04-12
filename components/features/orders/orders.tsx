@@ -44,7 +44,6 @@ export default function Orders() {
   const fetchOrders = async () => {
     try {
       const response = await nhaxinhService.api.orderGetAllOrderList();
-      console.log("Orders:", response.data);
       setOrders(response.data);
     } catch (error) {
       console.error("Error fetching Orders:", error);
@@ -52,7 +51,6 @@ export default function Orders() {
   };
 
   useEffect(() => {
-    console.log("Orders component mounted");
     fetchOrders();
   }, [pageNumber]);
 
@@ -132,51 +130,3 @@ export default function Orders() {
     </Card>
   );
 }
-
-const StatusSwitch = ({
-  status,
-  orderId,
-  fetchOrders,
-}: {
-  status: string;
-  orderId: string;
-  fetchOrders: () => void;
-}) => {
-  const [updating, setUpdating] = useState(false);
-
-  const updateOrderstatus = async (value: boolean) => {
-    try {
-      setUpdating(true);
-      const response = await axios.patch(
-        `http://localhost:5217/api/Product/UpdateProductActive/${orderId}`,
-        value,
-        {
-          headers: {
-            "Content-Type": "application/json", // 🔹 Đảm bảo gửi đúng format JSON
-          },
-        }
-      );
-      toast.success(response.data.message);
-      setUpdating(false);
-      fetchOrders();
-      console.log("Product status updated:", response.data);
-    } catch (error) {
-      toast.error("Error updating product status");
-      setUpdating(false);
-      console.error("Error updating product status:", error);
-    }
-  };
-
-  return (
-    <Select>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Theme" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="light"></SelectItem>
-        <SelectItem value="dark">Dark</SelectItem>
-        <SelectItem value="system">System</SelectItem>
-      </SelectContent>
-    </Select>
-  );
-};

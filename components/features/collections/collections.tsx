@@ -38,17 +38,14 @@ export default function Collections() {
   const [Collections, setCollections] = useState<Collections[]>([]);
   const fetchCollections = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5217/api/Collections/GetAllCollections"
-      );
-      console.log("Collections:", response.data);
+      const response =
+        await nhaxinhService.api.collectionsGetAllCollectionsList();
       setCollections(response.data);
     } catch (error) {
       console.error("Error fetching collections:", error);
     }
   };
   useEffect(() => {
-    console.log("Collections component mounted");
     fetchCollections();
   }, []);
 
@@ -137,7 +134,6 @@ const StatusSwitch = ({
       toast.success(response.data);
       setUpdating(false);
       fetchCollections();
-      console.log("Product status updated:", response.data);
     } catch (error) {
       toast.error("Error updating product status");
       setUpdating(false);

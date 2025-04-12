@@ -4,7 +4,9 @@ import "./globals.css";
 
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/util/context/AuthContext";
-import { ToastContainer } from "react-toastify";
+import { ClientOnlyToastContainer } from "@/util/container/ClientOnlyToastContainer";
+import { ThemeProvider } from "@/components/ui/theme-provider";
+
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,19 +31,15 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <ToastContainer
-          position="bottom-right" // 🔹 Đặt ở góc dưới bên phải
-          autoClose={3000} // 🔹 Tự động đóng sau 3s
-          hideProgressBar={false} // 🔹 Hiển thị thanh tiến trình
-          newestOnTop={false} // 🔹 Không ưu tiên toast mới nhất lên trên
-          closeOnClick // 🔹 Đóng khi click
-          rtl={false} // 🔹 Không dùng chế độ RTL
-          pauseOnFocusLoss // 🔹 Tạm dừng khi mất focus
-          draggable // 🔹 Kéo thả toast
-          pauseOnHover // 🔹 Tạm dừng khi hover
-          theme="light" // 🔹 Đặt theme light (hoặc "dark")
-        />
-        <AuthProvider>{children}</AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ClientOnlyToastContainer />
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

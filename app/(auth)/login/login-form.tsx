@@ -13,6 +13,8 @@ import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/util/context/AuthContext";
+import { nhaxinhService } from "@/util/services/nhaxinhService";
+import { toast } from "react-toastify";
 
 export function LoginForm({
   className,
@@ -28,20 +30,17 @@ export function LoginForm({
     event.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:5217/api/Login/Login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await nhaxinhService.api.loginLoginCreate({
+        email,
+        password,
+      });
 
       // Assuming the API returns a token
       const token = response.data;
 
       if (token) {
         login(token);
-        alert("Login successful!");
+        toast.success("Login successful");
         router.push("/");
         // Optionally, redirect the user or handle success
       } else {
@@ -65,7 +64,7 @@ export function LoginForm({
 
       {/* Login form */}
       <div className="relative flex min-h-screen justify-center items-center">
-        <Card className="bg-white bg-opacity-90 shadow-lg w-full max-w-md p-6 rounded-xl">
+        <Card className="bg-opacity-90 shadow-lg w-full max-w-md p-6 rounded-xl">
           <CardHeader className="flex items-center gap-4">
             <CardTitle className="text-2xl">Login</CardTitle>
             <img

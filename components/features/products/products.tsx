@@ -26,6 +26,7 @@ import { Switch } from "../../ui/switch";
 import { toast } from "react-toastify";
 import ProductDetailSheet from "./product-detail";
 import { Edit } from "lucide-react";
+import { nhaxinhService } from "@/util/services/nhaxinhService";
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -35,10 +36,10 @@ export default function Products() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:5217/api/Product/GetAllProducts?pageNumber=${pageNumber}&pageSize=${pageSize}`
-      );
-      console.log("Products:", response.data.items);
+      const response = await nhaxinhService.api.productGetAllProductsList({
+        pageNumber,
+        pageSize,
+      });
       setProducts(response.data.items);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -46,7 +47,6 @@ export default function Products() {
   };
 
   useEffect(() => {
-    console.log("Products component mounted");
     fetchProducts();
   }, [pageNumber]);
 
@@ -151,19 +151,14 @@ const StatusSwitch = ({
   const updateProductStatus = async (value: boolean) => {
     try {
       setUpdating(true);
-      const response = await axios.patch(
-        `http://localhost:5217/api/Product/UpdateProductActive/${productId}`,
-        value,
-        {
-          headers: {
-            "Content-Type": "application/json", // 🔹 Đảm bảo gửi đúng format JSON
-          },
-        }
-      );
+      const response =
+        await nhaxinhService.api.productUpdateProductActivePartialUpdate(
+          productId,
+          value
+        );
       toast.success(response.data.message);
       setUpdating(false);
       fetchProducts();
-      console.log("Product status updated:", response.data);
     } catch (error) {
       toast.error("Error updating product status");
       setUpdating(false);

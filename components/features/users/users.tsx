@@ -18,7 +18,6 @@ import {
 import { useEffect, useState } from "react";
 import { nhaxinhService } from "@/util/services/nhaxinhService";
 import AssignRolePopUp from "./assign-role";
-import DeleteUserPopUp from "./delete-user";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "react-toastify";
 import { Switch } from "@/components/ui/switch";
@@ -53,13 +52,11 @@ export default function Users() {
     try {
       const response = await nhaxinhService.api.userGetAllUserList();
       setUsers(response.data);
-      console.log("Users:", response.data);
     } catch (error) {
       console.error("Error fetching Users:", error);
     }
   };
   useEffect(() => {
-    console.log("Users component mounted");
     fetchUsers();
   }, []);
 

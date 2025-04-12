@@ -72,7 +72,6 @@ const UpdateMaterialPopUp = ({
       if (response.status == 200) {
         toast.success("Update material successfully");
         fetchMaterials();
-        form.reset();
         setOpen(false);
       }
     } catch (error) {

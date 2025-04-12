@@ -61,7 +61,6 @@ const AssignRolePopUp = ({
         id,
         role: values.role,
       });
-      console.log(response);
       if (response.status == 200) {
         toast.success("Assign role successfully");
         fetchUsers();
