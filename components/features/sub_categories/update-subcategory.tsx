@@ -114,7 +114,7 @@ const UpdateSubCategoryPopUp = ({
         setOpen(false);
       }
     } catch (error) {
-      //   toast.error("Add category failed");
+      toast.error("Add category failed");
     }
   }
 

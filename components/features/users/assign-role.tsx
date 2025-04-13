@@ -68,7 +68,7 @@ const AssignRolePopUp = ({
         setOpen(false);
       }
     } catch (error) {
-      //   toast.error("Add collection failed");
+      toast.error("Assign role failed");
     }
   }
 

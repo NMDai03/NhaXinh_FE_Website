@@ -78,7 +78,7 @@ export default function Categories() {
                 <TableCell>{category.categoryId}</TableCell>
                 <TableCell className="hidden sm:table-cell">
                   {category.name}{" "}
-                  {moment().diff(moment(category.createdAt)) < 3 && (
+                  {moment().diff(moment(category.createdAt)) < 1 && (
                     <Badge variant="secondary">New</Badge>
                   )}
                 </TableCell>

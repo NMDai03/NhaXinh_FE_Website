@@ -75,7 +75,7 @@ const UpdateMaterialPopUp = ({
         setOpen(false);
       }
     } catch (error) {
-      //   toast.error("Add material failed");
+      toast.error("Add material failed");
     }
   }
 

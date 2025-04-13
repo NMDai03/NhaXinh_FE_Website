@@ -78,7 +78,7 @@ const UpdateCollectionPopUp = ({
         setOpen(false);
       }
     } catch (error) {
-      //   toast.error("Add collection failed");
+      toast.error("Add collection failed");
     }
   }
 

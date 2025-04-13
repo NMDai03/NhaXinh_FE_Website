@@ -87,7 +87,7 @@ export default function Products() {
                       {product.name}
                     </a>
                   </ProductDetailSheet>
-                  {moment().diff(moment(product.createdAt), "days") < 3 && (
+                  {moment().diff(moment(product.createdAt), "days") < 1 && (
                     <Badge variant="secondary">New</Badge>
                   )}
                 </TableCell>

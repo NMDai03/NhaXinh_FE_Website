@@ -28,7 +28,6 @@ const menuItems = [
     name: "Orders",
     href: "/orders",
     icon: ShoppingCart,
-    badge: 6,
     role: ["admin", "employee"],
   },
   {
@@ -91,7 +90,7 @@ export default function SidebarMenu() {
     <nav>
       {menuItems
         .filter((item) => item.role.includes(currentUser?.role))
-        .map(({ name, href, icon: Icon, badge }) => (
+        .map(({ name, href, icon: Icon }) => (
           <Link
             key={href}
             href={href}
@@ -103,11 +102,6 @@ export default function SidebarMenu() {
           >
             <Icon className="h-4 w-4" />
             {name}
-            {badge && (
-              <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                {badge}
-              </Badge>
-            )}
           </Link>
         ))}
     </nav>
