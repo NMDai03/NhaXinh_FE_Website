@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
+import { nhaxinhService } from "@/util/services/nhaxinhService";
 
 interface Product {
   productId: number;
@@ -50,9 +51,8 @@ export default function ProductDetailSheet({
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5217/api/Product/GetProductById/${productId}`
-        );
+        const response =
+          await nhaxinhService.api.productGetProductByIdDetail(productId);
         setProduct(response.data);
       } catch (error) {
         console.error("Error fetching product:", error);

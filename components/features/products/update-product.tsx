@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/select";
 import { useEffect } from "react";
 import { useState } from "react";
+import { nhaxinhService } from "@/util/services/nhaxinhService";
+import { toast } from "react-toastify";
 
 interface ProductForm {
   name: string;
@@ -85,8 +87,8 @@ export default function UpdateProduct({ productId }: { productId: number }) {
 
   useEffect(() => {
     if (productId) {
-      axios
-        .get(`http://localhost:5217/api/Product/GetProductById/${productId}`)
+      nhaxinhService.api
+        .productGetProductByIdDetail(productId)
         .then((res) => setForm(res.data))
         .catch((error) => console.error("Error fetching product:", error));
     }
@@ -100,7 +102,7 @@ export default function UpdateProduct({ productId }: { productId: number }) {
 
       axios
         .get(
-          `http://localhost:5217/api/SubCategory/GetSubCategoryByCategoryId?id=${categoryId}`
+          `https://nhaxinhbackend20250408210605.azurewebsites.net/api/SubCategory/GetSubCategoryByCategoryId?id=${categoryId}`
         )
         .then((res) => setSubCategories(res.data))
         .catch((error) =>
@@ -113,9 +115,9 @@ export default function UpdateProduct({ productId }: { productId: number }) {
     const fetchData = async () => {
       try {
         const [categoryRes, materialRes, collectionRes] = await Promise.all([
-          axios.get("http://localhost:5217/api/Categories/GetAllCategory"),
-          axios.get("http://localhost:5217/api/Material/GetAllMaterials"),
-          axios.get("http://localhost:5217/api/Collections/GetAllCollections"),
+          nhaxinhService.api.categoriesGetAllCategoryList(),
+          nhaxinhService.api.materialGetAllMaterialsList(),
+          nhaxinhService.api.collectionsGetAllCollectionsList(),
         ]);
         setCategories(categoryRes.data);
         setMaterials(materialRes.data);
@@ -185,15 +187,35 @@ export default function UpdateProduct({ productId }: { productId: number }) {
         }
       });
 
-      await axios.put(
-        `http://localhost:5217/api/Product/UpdateProduct?id=${productId}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+      await nhaxinhService.api.productUpdateProductUpdate(
+        {
+          Active: form.active,
+          AssemblyRequired: form.assemblyRequired,
+          CollectionId: Number(form.collectionId),
+          CategoryId: Number(form.categoryId),
+          DimensionsHeight: Number(form.dimensionsHeight),
+          DimensionsLength: Number(form.dimensionsLength),
+          DimensionsWidth: Number(form.dimensionsWidth),
+          Description: form.description,
+          MaterialId: Number(form.materialId),
+          Name: form.name,
+          Price: Number(form.price),
+          SubCategoryId: Number(form.subCategoryId),
+          Weight: Number(form.weight),
+        },
+        {
+          id: productId,
+        }
       );
 
-      alert("Product updated successfully!");
+      toast.success("Product updated successfully!");
       router.push("/products");
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(
+        error?.response.data.errors.Images
+          ? error?.response.data.errors.Images[0]
+          : "Error adding product"
+      );
       console.error("Error updating product:", error);
     }
   };

@@ -62,9 +62,9 @@ export default function AddProduct() {
     const fetchData = async () => {
       try {
         const [categoryRes, materialRes, collectionRes] = await Promise.all([
-          axios.get("http://localhost:5217/api/Categories/GetAllCategory"),
-          axios.get("http://localhost:5217/api/Material/GetAllMaterials"),
-          axios.get("http://localhost:5217/api/Collections/GetAllCollections"),
+          nhaxinhService.api.categoriesGetAllCategoryList(),
+          nhaxinhService.api.materialGetAllMaterialsList(),
+          nhaxinhService.api.collectionsGetAllCollectionsList(),
         ]);
         setCategories(categoryRes.data);
         setMaterials(materialRes.data);
@@ -80,7 +80,7 @@ export default function AddProduct() {
     if (form.CategoryId) {
       axios
         .get(
-          `http://localhost:5217/api/SubCategory/GetSubCategoryByCategoryId?id=${form.CategoryId}`
+          `https://nhaxinhbackend20250408210605.azurewebsites.net/api/SubCategory/GetSubCategoryByCategoryId?id=${form.CategoryId}`
         )
         .then((response) => setSubCategories(response.data))
         .catch((error) =>
@@ -135,8 +135,12 @@ export default function AddProduct() {
         toast.success("Add product successfully");
         router.push("/products");
       }
-    } catch (error) {
-      console.error("Error adding product:", error);
+    } catch (error: any) {
+      toast.error(
+        error?.response.data.errors.Images
+          ? error?.response.data.errors.Images[0]
+          : "Error adding product"
+      );
     }
   };
 

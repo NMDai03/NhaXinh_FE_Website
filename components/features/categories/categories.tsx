@@ -40,17 +40,13 @@ export default function Categories() {
   const [Categories, setCategories] = useState<Category[]>([]);
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5217/api/Categories/GetAllCategory"
-      );
-      console.log("Categories:", response.data);
+      const response = await nhaxinhService.api.categoriesGetAllCategoryList();
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
   };
   useEffect(() => {
-    console.log("Categories component mounted");
     fetchCategories();
   }, []);
 
@@ -143,7 +139,6 @@ const StatusSwitch = ({
       }
       setUpdating(false);
       fetchCategories();
-      console.log("Category status updated:", response.data);
     } catch (error) {
       toast.error("Error updating category status");
       setUpdating(false);

@@ -431,7 +431,9 @@ export class HttpClient<SecurityDataType = unknown> {
   }: ApiConfig<SecurityDataType> = {}) {
     this.instance = axios.create({
       ...axiosConfig,
-      baseURL: axiosConfig.baseURL || "http://localhost:5217",
+      baseURL:
+        axiosConfig.baseURL ||
+        "https://nhaxinhbackend20250408210605.azurewebsites.net",
     });
     this.secure = secure;
     this.format = format;

@@ -40,17 +40,13 @@ export default function SubCategories() {
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
   const fetchSubCategories = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5217/api/SubCategory/GetAllCategory"
-      );
-      console.log("SubCategories:", response.data);
+      const response = await nhaxinhService.api.subCategoryGetAllCategoryList();
       setSubCategories(response.data);
     } catch (error) {
       console.error("Error fetching SubCategories:", error);
     }
   };
   useEffect(() => {
-    console.log("SubCategories component mounted");
     fetchSubCategories();
   }, []);
 
@@ -146,7 +142,6 @@ const StatusSwitch = ({
       }
       setUpdating(false);
       fetchCategories();
-      console.log("Sub-category status updated:", response.data);
     } catch (error) {
       toast.error("Error updating sub-category status");
       setUpdating(false);

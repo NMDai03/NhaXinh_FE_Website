@@ -38,17 +38,13 @@ export default function Materials() {
   const [Materials, setMaterials] = useState<Materials[]>([]);
   const fetchMaterials = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:5217/api/Material/GetAllMaterials"
-      );
-      console.log("Materials:", response.data);
+      const response = await nhaxinhService.api.materialGetAllMaterialsList();
       setMaterials(response.data);
     } catch (error) {
       console.error("Error fetching materials:", error);
     }
   };
   useEffect(() => {
-    console.log("Materials component mounted");
     fetchMaterials();
   }, []);
 
@@ -141,7 +137,6 @@ const StatusSwitch = ({
       }
       setUpdating(false);
       fetchMaterials();
-      console.log("Material status updated:", response.data);
     } catch (error) {
       toast.error("Error updating Material status");
       setUpdating(false);

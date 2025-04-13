@@ -74,7 +74,6 @@ const UpdateCategoryPopUp = ({
       if (response.status == 200) {
         toast.success("Update category successfully");
         fetchCategories();
-        form.reset();
         setOpen(false);
       }
     } catch (error) {

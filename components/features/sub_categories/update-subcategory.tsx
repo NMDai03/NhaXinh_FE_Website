@@ -111,7 +111,6 @@ const UpdateSubCategoryPopUp = ({
       if (response.status == 200) {
         toast.success("Update sub-category successfully");
         fetchSubCategories();
-        form.reset();
         setOpen(false);
       }
     } catch (error) {

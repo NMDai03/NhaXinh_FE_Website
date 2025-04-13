@@ -13,8 +13,6 @@ const ProductImage = ({ product }: { product: any }) => {
     }
   }, [product.images]);
 
-  console.log(imageSrc, product);
-
   return (
     <Image.PreviewGroup items={product.images.map((i: any) => i.imageUrl)}>
       <Image width={100} src={imageSrc} />

@@ -75,7 +75,6 @@ const UpdateCollectionPopUp = ({
       if (response.status == 200) {
         toast.success("Update collection successfully");
         fetchcollections();
-        form.reset();
         setOpen(false);
       }
     } catch (error) {
