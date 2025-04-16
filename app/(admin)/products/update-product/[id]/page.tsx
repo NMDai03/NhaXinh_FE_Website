@@ -1,16 +1,12 @@
 import UpdateProduct from "@/components/features/products/update-product";
 import React from "react";
 
-export const dynamic = "force-dynamic";
+type Params = Promise<{ id: string }>;
 
-type Props = {
-  params: { id: string };
-};
+const page = async (props: { params: Params }) => {
+  const params = await props.params;
 
-const page = ({ params }: Props) => {
-  const { id } = params;
-
-  return <UpdateProduct productId={Number(id)} />;
+  return <UpdateProduct productId={Number(params.id)} />;
 };
 
 export default page;

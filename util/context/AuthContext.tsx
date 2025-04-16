@@ -8,8 +8,9 @@ import {
 } from "react";
 
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { nhaxinhService } from "../services/nhaxinhService";
+import { toast } from "react-toastify";
 
 interface AuthContextType {
   currentUser: any;
@@ -32,6 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+  const pathName = usePathname();
 
   const fetchCurrentUser = async () => {
     const token = localStorage.getItem("authToken");
@@ -39,16 +41,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (token) {
       try {
         const response = await nhaxinhService.api.userCurrentUserList();
+        if (response.data.role === "customer") {
+          toast.error("You are not authorized to access this page");
+          router.push("/login");
+        }
         setCurrentUser(response.data);
         setIsAuthenticated(true);
       } catch (error) {
         console.error("Failed to fetch current user", error);
         setIsAuthenticated(false);
-        router.push("/login"); // Redirect to login if the user is not authenticated or token is invalid
+        if (!["/login", "/forgot-password"].includes(pathName)) {
+          router.push("/login"); // Redirect to login if the user is not authenticated or token is invalid
+        }
       }
     } else {
       setIsAuthenticated(false);
-      router.push("/login"); // Redirect to login if no token found
+      if (!["/login", "/forgot-password"].includes(pathName)) {
+        router.push("/login"); // Redirect to login if the user is not authenticated or token is invalid
+      }
     }
     setLoading(false);
   };

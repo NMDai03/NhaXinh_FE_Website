@@ -15,37 +15,32 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/util/context/AuthContext";
 import { nhaxinhService } from "@/util/services/nhaxinhService";
 import { toast } from "react-toastify";
-import Link from "next/link";
 
-export function LoginForm({
+export function ForgotPasswordForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();
 
   const router = useRouter();
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
-      const response = await nhaxinhService.api.loginLoginCreate({
+      const response = await nhaxinhService.api.loginResetPasswordCreate({
         email,
-        password,
       });
 
       // Assuming the API returns a token
       const token = response.data;
 
       if (token) {
-        login(token);
-        toast.success("Login successful");
-        router.push("/");
+        toast.success("Send email successfully");
+        router.push("/login");
         // Optionally, redirect the user or handle success
       } else {
-        setError("Login failed. Please try again.");
+        setError("Send failed. Please try again.");
       }
     } catch (err) {
       setError("An error occurred. Please try again.");
@@ -67,7 +62,7 @@ export function LoginForm({
       <div className="relative flex min-h-screen justify-center items-center">
         <Card className="bg-opacity-90 shadow-lg w-full max-w-md p-6 rounded-xl">
           <CardHeader className="flex items-center gap-4">
-            <CardTitle className="text-2xl">Login</CardTitle>
+            <CardTitle className="text-2xl">Forgot Password</CardTitle>
             <img
               src="/image/nhaxinhlogo.png"
               alt="nhaxinhbg"
@@ -89,32 +84,20 @@ export function LoginForm({
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="password">
-                    <div className="flex justify-between">
-                      <span>Password</span>
-                      <Link
-                        href="/forgot-password"
-                        className="text-xs hover:underline"
-                      >
-                        Forgot password?
-                      </Link>
-                    </div>
-                  </Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
                 {error && <div className="text-red-500">{error}</div>}
                 <Button type="submit" className="w-full">
-                  Login
+                  Send email
                 </Button>
               </div>
             </form>
+            <Button
+              variant={"link"}
+              onClick={() => router.push("/login")}
+              type="button"
+              className="w-full mt-5"
+            >
+              or Login?
+            </Button>
           </CardContent>
         </Card>
       </div>

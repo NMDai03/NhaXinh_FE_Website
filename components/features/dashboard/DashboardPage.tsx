@@ -139,7 +139,7 @@ const Dashboard = () => {
                     <td className="border p-2">{payment.orderId}</td>
                     <td className="border p-2">{payment.status}</td>
                     <td className="border p-2">
-                      ${payment.Amount?.toLocaleString()}
+                      {payment.amount?.toLocaleString()} VND
                     </td>
                   </tr>
                 ))}
@@ -165,12 +165,12 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {data?.orders?.map((order: any) => (
-                  <tr key={order.OrderId} className="border">
+                {data?.orders?.map((order: any, index: number) => (
+                  <tr key={index} className="border">
                     <td className="border p-2">{order.orderId}</td>
                     <td className="border p-2">{order.userId}</td>
                     <td className="border p-2">
-                      ${order.TotalPrice?.toLocaleString()}
+                      {order.totalPrice?.toLocaleString()} VND
                     </td>
                     <td className="border p-2">{order.status}</td>
                   </tr>

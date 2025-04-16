@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import { nhaxinhService } from "@/util/services/nhaxinhService";
+import AddVariationPopUp from "./add-variation";
+import EditVariationPopUp from "./edit-variation";
 
 interface Product {
   productId: number;
@@ -48,19 +50,18 @@ export default function ProductDetailSheet({
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const fetchProduct = async () => {
+    try {
+      const response =
+        await nhaxinhService.api.productGetProductByIdDetail(productId);
+      setProduct(response.data);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response =
-          await nhaxinhService.api.productGetProductByIdDetail(productId);
-        setProduct(response.data);
-      } catch (error) {
-        console.error("Error fetching product:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProduct();
   }, [productId]);
 
@@ -87,55 +88,58 @@ export default function ProductDetailSheet({
             />
             <div className="text-sm space-y-1">
               <p>
-                <strong>Giá:</strong> {product.price} VND
+                <strong>Price:</strong> {product.price} VND
               </p>
               <p>
-                <strong>Đã bán:</strong> {product.sold}
+                <strong>Sold:</strong> {product.sold}
               </p>
               <p>
-                <strong>Danh mục:</strong> {product.categoryName} -{" "}
+                <strong>Category:</strong> {product.categoryName} -{" "}
                 {product.subCategoryName}
               </p>
               <p>
-                <strong>Kích thước:</strong> {product.dimensionsLength} x{" "}
+                <strong>Size:</strong> {product.dimensionsLength} x{" "}
                 {product.dimensionsWidth} x {product.dimensionsHeight} cm
               </p>
               <p>
-                <strong>Chất liệu:</strong> {product.materialName}
+                <strong>Material:</strong> {product.materialName}
               </p>
               <p>
-                <strong>Bộ sưu tập:</strong> {product.collectionName}
+                <strong>Collection:</strong> {product.collectionName}
               </p>
               <p>
-                <strong>Trọng lượng:</strong> {product.weight} kg
+                <strong>Weight:</strong> {product.weight} kg
               </p>
               <p>
-                <strong>Lắp ráp:</strong>{" "}
+                <strong>Assembly Required:</strong>{" "}
                 {product.assemblyRequired ? "Cần lắp ráp" : "Không cần lắp ráp"}
               </p>
               <p>
-                <strong>Trạng thái:</strong>{" "}
+                <strong>Status:</strong>{" "}
                 {product.active ? "Đang bán" : "Ngừng bán"}
               </p>
               {product.variations && product.variations.length > 0 && (
                 <div className="mt-2">
                   <p className="font-semibold">Available Variations:</p>
-                  <div className="flex gap-2 mt-2">
+                  <div className="flex items-center gap-2 mt-2 h-24 overflow-hidden">
                     {product.variations.map((variation) => (
-                      <div
-                        key={variation.variationId}
-                        className="border p-2 rounded-lg text-center"
-                      >
-                        <Image
-                          src={variation.imageUrl}
-                          alt={variation.color}
-                          width={50}
-                          height={50}
-                          className="rounded-lg"
-                        />
-                        <p className="text-sm">{variation.color}</p>
-                      </div>
+                      <EditVariationPopUp key={variation.variationId} variation={variation} fetchProductDetail={fetchProduct} productId={productId}>
+                        <div className="border p-2 rounded-lg text-center h-full flex flex-col">
+                          <Image
+                            src={variation.imageUrl}
+                            alt={variation.color}
+                            width={50}
+                            height={50}
+                            className="rounded-lg h-2/3 object-cover"
+                          />
+                          <p className="text-sm h-1/3">{variation.color}</p>
+                        </div>
+                      </EditVariationPopUp>
                     ))}
+                    <AddVariationPopUp
+                      productId={productId}
+                      fetchProductDetail={fetchProduct}
+                    />
                   </div>
                 </div>
               )}

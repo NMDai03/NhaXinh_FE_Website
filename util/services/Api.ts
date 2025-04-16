@@ -996,6 +996,22 @@ export class Api<SecurityDataType extends unknown> {
      * No description
      *
      * @tags Material
+     * @name MaterialGetAllMaterialsList
+     * @request GET:/api/Material/GetAllMaterials
+     * @secure
+     */
+    paymentGetAllPaymentsList: (params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Payment/GetAllPayment`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Material
      * @name MaterialGetMaterialByIdDetail
      * @request GET:/api/Material/GetMaterialById/{id}
      * @secure

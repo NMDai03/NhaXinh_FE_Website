@@ -12,6 +12,7 @@ import {
   Boxes,
   MessageCircleMore,
   BellRing,
+  CreditCard,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/util/context/AuthContext";
@@ -44,7 +45,7 @@ const menuItems = [
     role: ["admin"],
   },
   {
-    name: "Sub Categories",
+    name: "Sub-categories",
     href: "/sub_categories",
     icon: ChartColumnStacked,
     role: ["admin"],
@@ -71,6 +72,12 @@ const menuItems = [
     name: "Notifications",
     href: "/notifications",
     icon: BellRing,
+    role: ["admin", "employee"],
+  },
+  {
+    name: "Payments",
+    href: "/payments",
+    icon: CreditCard,
     role: ["admin", "employee"],
   },
 ];

@@ -21,7 +21,6 @@ import { Button } from "@/components/ui/button";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ModeToggle } from "@/components/ui/mode-toggle";
-import AdminSearch from "@/components/features/admin-search";
 import DropdownMenuProfile from "@/components/features/dropdown_menu";
 import SidebarMenu from "./_components/sidebar";
 import Image from "next/image";
@@ -136,9 +135,7 @@ export default function AdminLayout({
                 </nav>
               </SheetContent>
             </Sheet>
-            <div className="w-full flex-1">
-              <AdminSearch />
-            </div>
+            <div className="w-full flex-1"></div>
             <ModeToggle />
             <DropdownMenuProfile />
           </header>
