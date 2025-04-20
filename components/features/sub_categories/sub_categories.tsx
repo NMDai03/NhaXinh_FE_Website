@@ -53,7 +53,7 @@ export default function SubCategories() {
   return (
     <Card>
       <CardHeader className="px-7">
-        <CardTitle>Sub SubCategories</CardTitle>
+        <CardTitle>Sub-categories</CardTitle>
         <CardDescription>Recent SubCategories from your store.</CardDescription>
       </CardHeader>
       <CardContent>
