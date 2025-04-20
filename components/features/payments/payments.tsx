@@ -31,7 +31,7 @@ export default function Payments() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const fetchPayments = async () => {
     try {
-      const response = await nhaxinhService.api.paymentGetAllPaymentsList();
+      const response = await nhaxinhService.api.paymentGetAllPaymentList();
       setPayments(response.data);
     } catch (error) {
       console.error("Error fetching materials:", error);

@@ -34,6 +34,15 @@ interface Order {
   status: string;
   createdAt: string;
   orderInfo: OrderInfo[];
+  orderStatusHistory: OrderStatusLog[];
+}
+
+interface OrderStatusLog {
+  changedAt: string; // ISO date string
+  email: string;
+  orderId: string;
+  reason: string;
+  status: string;
 }
 
 export default function OrderDetailSheet({
@@ -92,6 +101,34 @@ export default function OrderDetailSheet({
             ))}
           </div>
         </div>
+
+        {order.orderStatusHistory.length > 0 && (
+          <div className="mt-6">
+            <h3 className="font-semibold text-lg">Status History</h3>
+            <div className="mt-2 space-y-3">
+              {order.orderStatusHistory.map((log, index) => (
+                <div
+                  key={index}
+                  className="text-sm border p-3 rounded-md bg-muted"
+                >
+                  <p>
+                    <strong>Status:</strong> {log.status}
+                  </p>
+                  <p>
+                    <strong>Reason:</strong> {log.reason}
+                  </p>
+                  <p>
+                    <strong>Changed By:</strong> {log.email}
+                  </p>
+                  <p>
+                    <strong>Time:</strong>{" "}
+                    {new Date(log.changedAt).toLocaleString()}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </SheetContent>
     </Sheet>
   );

@@ -291,7 +291,7 @@ export default function AddProduct() {
           </div>
           <div className="space-y-2">
             <Label>Image</Label>
-            <Input type="file" name="Images" onChange={handleChange} />
+            <Input type="file" name="Images" onChange={handleChange} multiple />
           </div>
           <div className="space-y-2">
             <Label>Assembly Required</Label>

@@ -38,13 +38,19 @@ import OrderDetailSheet from "./order-detail";
 export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
+  const [searchId, setSearchId] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
   const pageSize = 5;
-  const router = useRouter();
 
   const fetchOrders = async () => {
     try {
-      const response = await nhaxinhService.api.orderGetAllOrderList();
-      setOrders(response.data);
+      const response = await nhaxinhService.api.orderGetAllOrderList({
+        pageNumber,
+        pageSize,
+        orderId: searchId,
+        status: filterStatus,
+      });
+      setOrders(response.data.items);
     } catch (error) {
       console.error("Error fetching Orders:", error);
     }
@@ -52,7 +58,7 @@ export default function Orders() {
 
   useEffect(() => {
     fetchOrders();
-  }, [pageNumber]);
+  }, [pageNumber, searchId, filterStatus]);
 
   return (
     <Card>
@@ -60,6 +66,39 @@ export default function Orders() {
         <div>
           <CardTitle>Orders</CardTitle>
           <CardDescription>Recent Orders from your store.</CardDescription>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4 mb-4 px-2 sm:px-0 items-center">
+          <input
+            type="text"
+            placeholder="Search by Order ID"
+            className="border rounded px-3 py-2 w-full sm:w-64"
+            value={searchId}
+            onChange={(e) => {
+              setPageNumber(1);
+              setSearchId(e.target.value);
+            }}
+          />
+
+          <Select
+            value={filterStatus}
+            onValueChange={(val) => {
+              setPageNumber(1);
+              setFilterStatus(val);
+            }}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="processing">Processing</SelectItem>
+              <SelectItem value="confirmed">Confirmed</SelectItem>
+              <SelectItem value="canceled">Canceled</SelectItem>
+              <SelectItem value="delivered">Delivered</SelectItem>
+              <SelectItem value="received">Received</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </CardHeader>
       <CardContent>
@@ -126,6 +165,18 @@ export default function Orders() {
             ))}
           </TableBody>
         </Table>
+        <div className="flex justify-between mt-4">
+          <Button
+            onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+            disabled={pageNumber === 1}
+          >
+            Previous
+          </Button>
+          <span>Page {pageNumber}</span>
+          <Button onClick={() => setPageNumber((prev) => prev + 1)}>
+            Next
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

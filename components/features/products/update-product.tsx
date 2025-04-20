@@ -37,6 +37,7 @@ interface ProductForm {
   subCategoryName?: string;
   materialName?: string;
   collectionName?: string;
+  model3DUrl?: File;
 }
 
 interface Category {
@@ -76,6 +77,7 @@ export default function UpdateProduct({ productId }: { productId: number }) {
     assemblyRequired: false,
     active: true,
     images: undefined,
+    model3DUrl: undefined,
   });
 
   const [categories, setCategories] = useState<Category[]>([]);
@@ -202,6 +204,8 @@ export default function UpdateProduct({ productId }: { productId: number }) {
           Price: Number(form.price),
           SubCategoryId: Number(form.subCategoryId),
           Weight: Number(form.weight),
+          Images: form.images,
+          Model3DUrl: form.model3DUrl,
         },
         {
           id: productId,
@@ -375,7 +379,7 @@ export default function UpdateProduct({ productId }: { productId: number }) {
           </div>
           <div className="space-y-2">
             <Label>image</Label>
-            <Input type="file" name="images" onChange={handleChange} />
+            <Input type="file" name="images" onChange={handleChange} multiple />
           </div>
           <div className="space-y-2">
             <Label>assembly required</Label>

@@ -53,7 +53,7 @@ export interface Category {
   createdAt?: string | null;
   /** @format date-time */
   updatedAt?: string | null;
-  active?: boolean | null;
+  active?: boolean;
   products?: Product[] | null;
   subCategories?: SubCategory[] | null;
 }
@@ -68,7 +68,7 @@ export interface Collection {
   collectionId?: number;
   name?: string | null;
   description?: string | null;
-  active?: boolean | null;
+  active?: boolean;
   /** @format date-time */
   createdAt?: string | null;
   /** @format date-time */
@@ -110,7 +110,7 @@ export interface Material {
   createdAt?: string | null;
   /** @format date-time */
   updatedAt?: string | null;
-  active?: boolean | null;
+  active?: boolean;
   products?: Product[] | null;
 }
 
@@ -158,9 +158,10 @@ export interface Order {
   /** @format date-time */
   createdAt?: string | null;
   paymentMethod?: string | null;
-  user?: User;
   orderDetails?: OrderDetail[] | null;
+  orderStatusHistories?: OrderStatusHistory[] | null;
   payments?: Payment[] | null;
+  user?: User;
 }
 
 export interface OrderDetail {
@@ -178,6 +179,20 @@ export interface OrderDetail {
   order?: Order;
   product?: Product;
   variation?: ProductVariation;
+}
+
+export interface OrderStatusHistory {
+  /** @format int32 */
+  historyId?: number;
+  orderId?: string | null;
+  /** @format int32 */
+  userId?: number;
+  status?: string | null;
+  reason?: string | null;
+  /** @format date-time */
+  changedAt?: string;
+  order?: Order;
+  user?: User;
 }
 
 export interface Payment {
@@ -230,15 +245,15 @@ export interface Product {
   /** @format date-time */
   updatedAt?: string | null;
   model3DUrl?: string | null;
+  carts?: Cart[] | null;
   category?: Category;
   collection?: Collection;
   material?: Material;
-  subCategory?: SubCategory;
-  carts?: Cart[] | null;
   orderDetails?: OrderDetail[] | null;
   productImages?: ProductImage[] | null;
   productVariations?: ProductVariation[] | null;
   reviews?: Review[] | null;
+  subCategory?: SubCategory;
   wishlists?: Wishlist[] | null;
 }
 
@@ -271,9 +286,9 @@ export interface ProductVariation {
   productId?: number;
   color?: string | null;
   imageUrl?: string | null;
-  product?: Product;
   carts?: Cart[] | null;
   orderDetails?: OrderDetail[] | null;
+  product?: Product;
 }
 
 export interface RegisterDTO {
@@ -314,7 +329,7 @@ export interface SubCategory {
   createdAt?: string | null;
   /** @format date-time */
   updatedAt?: string | null;
-  active?: boolean | null;
+  active?: boolean;
   category?: Category;
   products?: Product[] | null;
 }
@@ -345,6 +360,7 @@ export interface User {
   messageReceivers?: Message[] | null;
   messageSenders?: Message[] | null;
   notifications?: Notification[] | null;
+  orderStatusHistories?: OrderStatusHistory[] | null;
   orders?: Order[] | null;
   reviews?: Review[] | null;
   wishlists?: Wishlist[] | null;
@@ -996,22 +1012,6 @@ export class Api<SecurityDataType extends unknown> {
      * No description
      *
      * @tags Material
-     * @name MaterialGetAllMaterialsList
-     * @request GET:/api/Material/GetAllMaterials
-     * @secure
-     */
-    paymentGetAllPaymentsList: (params: RequestParams = {}) =>
-      this.http.request({
-        path: `/api/Payment/GetAllPayment`,
-        method: "GET",
-        secure: true,
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Material
      * @name MaterialGetMaterialByIdDetail
      * @request GET:/api/Material/GetMaterialById/{id}
      * @secure
@@ -1191,6 +1191,7 @@ export class Api<SecurityDataType extends unknown> {
     orderUpdateOrderStatusCreate: (
       query?: {
         orderId?: string;
+        reason?: string;
         status?: string;
       },
       params: RequestParams = {}
@@ -1249,10 +1250,21 @@ export class Api<SecurityDataType extends unknown> {
      * @request GET:/api/Order/GetAllOrder
      * @secure
      */
-    orderGetAllOrderList: (params: RequestParams = {}) =>
+    orderGetAllOrderList: (
+      query?: {
+        /** @format int32 */
+        pageNumber?: number;
+        /** @format int32 */
+        pageSize?: number;
+        orderId?: string;
+        status?: string;
+      },
+      params: RequestParams = {}
+    ) =>
       this.http.request({
         path: `/api/Order/GetAllOrder`,
         method: "GET",
+        query: query,
         secure: true,
         ...params,
       }),
@@ -1291,6 +1303,22 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/Payment/CreatePayment`,
         method: "POST",
         query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Payment
+     * @name PaymentGetAllPaymentList
+     * @request GET:/api/Payment/GetAllPayment
+     * @secure
+     */
+    paymentGetAllPaymentList: (params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Payment/GetAllPayment`,
+        method: "GET",
         secure: true,
         ...params,
       }),
@@ -1930,10 +1958,19 @@ export class Api<SecurityDataType extends unknown> {
      * @request GET:/api/User/GetAllUser
      * @secure
      */
-    userGetAllUserList: (params: RequestParams = {}) =>
+    userGetAllUserList: (
+      query?: {
+        /** @format int32 */
+        pageNumber?: number;
+        /** @format int32 */
+        pageSize?: number;
+      },
+      params: RequestParams = {}
+    ) =>
       this.http.request({
         path: `/api/User/GetAllUser`,
         method: "GET",
+        query: query,
         secure: true,
         ...params,
       }),
@@ -2020,6 +2057,50 @@ export class Api<SecurityDataType extends unknown> {
       this.http.request({
         path: `/api/User/UpdateUserActive`,
         method: "POST",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserGetUserByRoleList
+     * @request GET:/api/User/GetUserByRole
+     * @secure
+     */
+    userGetUserByRoleList: (
+      query?: {
+        role?: string;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/User/GetUserByRole`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserGetUserByEmailList
+     * @request GET:/api/User/GetUserByEmail
+     * @secure
+     */
+    userGetUserByEmailList: (
+      query?: {
+        email?: string;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/User/GetUserByEmail`,
+        method: "GET",
         query: query,
         secure: true,
         ...params,

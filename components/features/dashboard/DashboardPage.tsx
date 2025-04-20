@@ -36,7 +36,7 @@ const Dashboard = () => {
   ];
 
   const orderStatusData = [
-    { name: "Shipped", value: data?.shippedOrder || 0 },
+    { name: "Finished Orders", value: data?.shippedOrder || 0 },
     { name: "Pending", value: data?.pendingOrder || 0 },
     { name: "Processing", value: data?.processingOrder || 0 },
   ];
@@ -99,7 +99,7 @@ const Dashboard = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Shipped Orders</CardTitle>
+          <CardTitle>Finished Orders</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-bold">{data?.shippedOrder || 0}</p>

@@ -21,6 +21,7 @@ import AssignRolePopUp from "./assign-role";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "react-toastify";
 import { Switch } from "@/components/ui/switch";
+import { Button } from "antd";
 
 interface User {
   userId: number;
@@ -48,9 +49,15 @@ const UserRoleBadge = ({ role }: { role: string }) => {
 
 export default function Users() {
   const [Users, setUsers] = useState<User[]>([]);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [searchEmail, setSearchEmail] = useState("");
+  const pageSize = 5;
   const fetchUsers = async () => {
     try {
-      const response = await nhaxinhService.api.userGetAllUserList();
+      const response = await nhaxinhService.api.userGetAllUserList({
+        pageNumber,
+        pageSize,
+      });
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching Users:", error);
@@ -58,13 +65,44 @@ export default function Users() {
   };
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [pageNumber]);
+
+  const findByEmail = async () => {
+    try {
+      const response = await nhaxinhService.api.userGetUserByEmailList({
+        email: searchEmail,
+      });
+      setUsers([response.data]);
+    } catch (error) {
+      console.error("Error fetching order by email:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (searchEmail !== "") {
+      findByEmail();
+    } else {
+      fetchUsers();
+    }
+  }, [searchEmail]);
 
   return (
     <Card>
-      <CardHeader className="px-7">
-        <CardTitle>Users</CardTitle>
-        <CardDescription>Recent Users from your store.</CardDescription>
+      <CardHeader className="px-7 flex flex-row justify-between items-center">
+        <div>
+          <CardTitle>Users</CardTitle>
+          <CardDescription>Recent Users from your store.</CardDescription>
+        </div>
+        <input
+          type="text"
+          placeholder="Search by email"
+          className="border rounded px-3 py-2 w-full sm:w-64"
+          value={searchEmail}
+          onChange={(e) => {
+            setPageNumber(1);
+            setSearchEmail(e.target.value);
+          }}
+        />
       </CardHeader>
       <CardContent>
         <Table className="mt-4">
@@ -117,6 +155,18 @@ export default function Users() {
             ))}
           </TableBody>
         </Table>
+        <div className="flex justify-between mt-4">
+          <Button
+            onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+            disabled={pageNumber === 1}
+          >
+            Previous
+          </Button>
+          <span>Page {pageNumber}</span>
+          <Button onClick={() => setPageNumber((prev) => prev + 1)}>
+            Next
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
