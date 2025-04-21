@@ -80,7 +80,9 @@ export default function SubCategories() {
               <TableRow key={category.subCategoryId}>
                 <TableCell>{category.subCategoryId}</TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {category.name} <Badge variant="secondary">New</Badge>
+                  {category.name}                  
+                   {moment().diff(moment(category.createdAt)) < 1 && (
+                    <Badge variant="secondary">New</Badge>)}
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
                   {category.description}

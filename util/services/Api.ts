@@ -1253,6 +1253,8 @@ export class Api<SecurityDataType extends unknown> {
     orderGetAllOrderList: (
       query?: {
         /** @format int32 */
+        totalCount? : number;
+        /** @format int32 */
         pageNumber?: number;
         /** @format int32 */
         pageSize?: number;

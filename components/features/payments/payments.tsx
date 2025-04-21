@@ -60,6 +60,7 @@ export default function Payments() {
           <TableBody>
             {payments.map((payment) => (
               <TableRow key={payment.paymentId}>
+                <TableCell>{payment.paymentId}</TableCell>
                 <TableCell>{payment.orderId}</TableCell>
                 <TableCell className="hidden sm:table-cell">
                   {payment.amount}

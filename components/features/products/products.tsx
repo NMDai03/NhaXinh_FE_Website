@@ -31,6 +31,7 @@ import { nhaxinhService } from "@/util/services/nhaxinhService";
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const pageSize = 5;
   const router = useRouter();
 
@@ -41,6 +42,7 @@ export default function Products() {
         pageSize,
       });
       setProducts(response.data.items);
+      setTotalCount(response.data.totalCount);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -49,7 +51,15 @@ export default function Products() {
   useEffect(() => {
     fetchProducts();
   }, [pageNumber]);
+  const totalPages = Math.ceil(totalCount / pageSize);
 
+  const handlePreviousPage = () => {
+    setPageNumber((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setPageNumber((prev) => Math.min(prev + 1, totalPages));
+  };
   return (
     <Card>
       <CardHeader className="px-7 flex flex-row justify-between items-center">
@@ -120,18 +130,32 @@ export default function Products() {
             ))}
           </TableBody>
         </Table>
-        <div className="flex justify-between mt-4">
-          <Button
-            onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-            disabled={pageNumber === 1}
-          >
-            Previous
-          </Button>
-          <span>Page {pageNumber}</span>
-          <Button onClick={() => setPageNumber((prev) => prev + 1)}>
-            Next
-          </Button>
+        <div className="flex items-center justify-between mt-4">
+        <Button
+          onClick={handlePreviousPage}
+          disabled={pageNumber === 1}
+          className="px-4 py-2"
+        >
+          Previous
+        </Button>
+        
+        <div className="flex flex-col items-center text-center">
+          <span className="text-sm">
+            Page {pageNumber} of {totalPages || 1}
+          </span>
+          <span className="text-xs text-gray-500">
+            Showing {products.length} of {totalCount} orders
+          </span>
         </div>
+        
+        <Button
+          onClick={handleNextPage}
+          disabled={pageNumber >= totalPages}
+          className="px-4 py-2"
+        >
+          Next
+        </Button>
+      </div>
       </CardContent>
     </Card>
   );
