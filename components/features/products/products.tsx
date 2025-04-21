@@ -144,7 +144,7 @@ export default function Products() {
             Page {pageNumber} of {totalPages || 1}
           </span>
           <span className="text-xs text-gray-500">
-            Showing {products.length} of {totalCount} orders
+            Showing {products.length} of {totalCount} products
           </span>
         </div>
         

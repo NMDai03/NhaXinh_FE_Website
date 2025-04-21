@@ -1977,6 +1977,24 @@ export class Api<SecurityDataType extends unknown> {
         ...params,
       }),
 
+
+      userGetAllUserPagingList: (
+        query?: {
+          /** @format int32 */
+          pageNumber?: number;
+          /** @format int32 */
+          pageSize?: number;
+          email?: string;
+        },
+        params: RequestParams = {}
+      ) =>
+        this.http.request({
+          path: `/api/User/GetAllUserPaging`,
+          method: "GET",
+          query: query,
+          secure: true,
+          ...params,
+        }),
     /**
      * No description
      *

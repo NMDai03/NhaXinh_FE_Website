@@ -51,40 +51,50 @@ export default function Users() {
   const [Users, setUsers] = useState<User[]>([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [searchEmail, setSearchEmail] = useState("");
+  const [totalCount, setTotalCount] = useState(0);
   const pageSize = 5;
   const fetchUsers = async () => {
     try {
-      const response = await nhaxinhService.api.userGetAllUserList({
+      const response = await nhaxinhService.api.userGetAllUserPagingList({
         pageNumber,
         pageSize,
+        email:searchEmail,
       });
-      setUsers(response.data);
+      setUsers(response.data.items);
+      setTotalCount(response.data.totalCount);
     } catch (error) {
       console.error("Error fetching Users:", error);
     }
   };
   useEffect(() => {
     fetchUsers();
-  }, [pageNumber]);
-
-  const findByEmail = async () => {
-    try {
-      const response = await nhaxinhService.api.userGetUserByEmailList({
-        email: searchEmail,
-      });
-      setUsers([response.data]);
-    } catch (error) {
-      console.error("Error fetching order by email:", error);
-    }
+  }, [pageNumber, searchEmail]);
+  const totalPages = Math.ceil(totalCount / pageSize);
+  const handlePreviousPage = () => {
+    setPageNumber((prev) => Math.max(prev - 1, 1));
   };
 
-  useEffect(() => {
-    if (searchEmail !== "") {
-      findByEmail();
-    } else {
-      fetchUsers();
-    }
-  }, [searchEmail]);
+  const handleNextPage = () => {
+    setPageNumber((prev) => Math.min(prev + 1, totalPages));
+  };
+  // const findByEmail = async () => {
+  //   try {
+  //     const response = await nhaxinhService.api.userGetUserByEmailList({
+  //       email: searchEmail,
+  //     });
+  //     setUsers([response.data]);
+  //   } catch (error) {
+  //     console.error("Error fetching order by email:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (searchEmail !== "") {
+  //     findByEmail();
+  //   } else {
+  //     fetchUsers();
+  //   }
+  // }, [searchEmail]);
 
   return (
     <Card>
@@ -155,18 +165,32 @@ export default function Users() {
             ))}
           </TableBody>
         </Table>
-        <div className="flex justify-between mt-4">
-          <Button
-            onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-            disabled={pageNumber === 1}
-          >
-            Previous
-          </Button>
-          <span>Page {pageNumber}</span>
-          <Button onClick={() => setPageNumber((prev) => prev + 1)}>
-            Next
-          </Button>
+        <div className="flex items-center justify-between mt-4">
+        <Button
+          onClick={handlePreviousPage}
+          disabled={pageNumber === 1}
+          className="px-4 py-2"
+        >
+          Previous
+        </Button>
+        
+        <div className="flex flex-col items-center text-center">
+          <span className="text-sm">
+            Page {pageNumber} of {totalPages || 1}
+          </span>
+          <span className="text-xs text-gray-500">
+            Showing {Users.length} of {totalCount} users
+          </span>
         </div>
+        
+        <Button
+          onClick={handleNextPage}
+          disabled={pageNumber >= totalPages}
+          className="px-4 py-2"
+        >
+          Next
+        </Button>
+      </div>
       </CardContent>
     </Card>
   );
