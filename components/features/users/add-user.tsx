@@ -86,7 +86,7 @@ const AddUserPopUp = ({ fetchUsers }: { fetchUsers: any }) => {
             <DialogHeader>
               <DialogTitle>Add New User</DialogTitle>
               <DialogDescription>
-                Fill all the fields. Click save when you're done.
+                {"Fill all the fields. Click save when you're done."}
               </DialogDescription>
             </DialogHeader>
 
