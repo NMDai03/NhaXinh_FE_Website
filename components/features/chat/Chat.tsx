@@ -36,6 +36,7 @@ const AdminChat: React.FC = () => {
       const customers = allUsers.data.filter(
         (u: User) => u.role === "customer"
       );
+      console.log(customers, allUsers);
       if (customers.length > 0) {
         setSelectedCustomer(customers[0]);
       }

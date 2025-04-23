@@ -133,8 +133,8 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {data?.payments?.map((payment: any) => (
-                  <tr key={payment.PaymentId} className="border">
+                {data?.payments?.slice(0, 5).map((payment: any) => (
+                  <tr key={payment.paymentId} className="border">
                     <td className="border p-2">{payment.paymentId}</td>
                     <td className="border p-2">{payment.orderId}</td>
                     <td className="border p-2">{payment.status}</td>
@@ -165,7 +165,7 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {data?.orders?.map((order: any, index: number) => (
+                {data?.orders?.slice(0, 5).map((order: any, index: number) => (
                   <tr key={index} className="border">
                     <td className="border p-2">{order.orderId}</td>
                     <td className="border p-2">{order.email}</td>

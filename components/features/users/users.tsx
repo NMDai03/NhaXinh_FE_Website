@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "react-toastify";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "antd";
+import AddUserPopUp from "./add-user";
 
 interface User {
   userId: number;
@@ -58,7 +59,7 @@ export default function Users() {
       const response = await nhaxinhService.api.userGetAllUserPagingList({
         pageNumber,
         pageSize,
-        email:searchEmail,
+        email: searchEmail,
       });
       setUsers(response.data.items);
       setTotalCount(response.data.totalCount);
@@ -115,6 +116,7 @@ export default function Users() {
         />
       </CardHeader>
       <CardContent>
+        <AddUserPopUp fetchUsers={fetchUsers} />
         <Table className="mt-4">
           <TableHeader>
             <TableRow>
@@ -166,31 +168,31 @@ export default function Users() {
           </TableBody>
         </Table>
         <div className="flex items-center justify-between mt-4">
-        <Button
-          onClick={handlePreviousPage}
-          disabled={pageNumber === 1}
-          className="px-4 py-2"
-        >
-          Previous
-        </Button>
-        
-        <div className="flex flex-col items-center text-center">
-          <span className="text-sm">
-            Page {pageNumber} of {totalPages || 1}
-          </span>
-          <span className="text-xs text-gray-500">
-            Showing {Users.length} of {totalCount} users
-          </span>
+          <Button
+            onClick={handlePreviousPage}
+            disabled={pageNumber === 1}
+            className="px-4 py-2"
+          >
+            Previous
+          </Button>
+
+          <div className="flex flex-col items-center text-center">
+            <span className="text-sm">
+              Page {pageNumber} of {totalPages || 1}
+            </span>
+            <span className="text-xs text-gray-500">
+              Showing {Users.length} of {totalCount} users
+            </span>
+          </div>
+
+          <Button
+            onClick={handleNextPage}
+            disabled={pageNumber >= totalPages}
+            className="px-4 py-2"
+          >
+            Next
+          </Button>
         </div>
-        
-        <Button
-          onClick={handleNextPage}
-          disabled={pageNumber >= totalPages}
-          className="px-4 py-2"
-        >
-          Next
-        </Button>
-      </div>
       </CardContent>
     </Card>
   );

@@ -366,6 +366,17 @@ export interface User {
   wishlists?: Wishlist[] | null;
 }
 
+export interface UserAddDTO {
+  email?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  password?: string | null;
+  rePassword?: string | null;
+  phone?: string | null;
+  address?: string | null;
+  role?: string | null;
+}
+
 export interface VerifyOTPDTO {
   email?: string | null;
   userOtp?: string | null;
@@ -585,6 +596,24 @@ export class Api<SecurityDataType extends unknown> {
         path: `/api/Admin/GetDashboard`,
         method: "GET",
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name AdminAddUserAdminCreate
+     * @request POST:/api/Admin/AddUserAdmin
+     * @secure
+     */
+    adminAddUserAdminCreate: (data: UserAddDTO, params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Admin/AddUserAdmin`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
 
@@ -1253,8 +1282,6 @@ export class Api<SecurityDataType extends unknown> {
     orderGetAllOrderList: (
       query?: {
         /** @format int32 */
-        totalCount? : number;
-        /** @format int32 */
         pageNumber?: number;
         /** @format int32 */
         pageSize?: number;
@@ -1282,6 +1309,22 @@ export class Api<SecurityDataType extends unknown> {
     orderGetUserOrderHistorysList: (params: RequestParams = {}) =>
       this.http.request({
         path: `/api/Order/GetUserOrderHistorys`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Order
+     * @name OrderGetUserTotalSpentList
+     * @request GET:/api/Order/GetUserTotalSpent
+     * @secure
+     */
+    orderGetUserTotalSpentList: (params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/Order/GetUserTotalSpent`,
         method: "GET",
         secure: true,
         ...params,
@@ -1822,6 +1865,29 @@ export class Api<SecurityDataType extends unknown> {
     /**
      * No description
      *
+     * @tags Review
+     * @name ReviewCheckUserToReviewList
+     * @request GET:/api/Review/CheckUserToReview
+     * @secure
+     */
+    reviewCheckUserToReviewList: (
+      query?: {
+        /** @format int32 */
+        productId?: number;
+      },
+      params: RequestParams = {}
+    ) =>
+      this.http.request({
+        path: `/api/Review/CheckUserToReview`,
+        method: "GET",
+        query: query,
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags SubCategory
      * @name SubCategoryGetAllCategoryList
      * @request GET:/api/SubCategory/GetAllCategory
@@ -1956,45 +2022,44 @@ export class Api<SecurityDataType extends unknown> {
      * No description
      *
      * @tags User
-     * @name UserGetAllUserList
-     * @request GET:/api/User/GetAllUser
+     * @name UserGetAllUserPagingList
+     * @request GET:/api/User/GetAllUserPaging
      * @secure
      */
-    userGetAllUserList: (
+    userGetAllUserPagingList: (
       query?: {
         /** @format int32 */
         pageNumber?: number;
         /** @format int32 */
         pageSize?: number;
+        email?: string;
       },
       params: RequestParams = {}
     ) =>
       this.http.request({
-        path: `/api/User/GetAllUser`,
+        path: `/api/User/GetAllUserPaging`,
         method: "GET",
         query: query,
         secure: true,
         ...params,
       }),
 
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserGetAllUserList
+     * @request GET:/api/User/GetAllUser
+     * @secure
+     */
+    userGetAllUserList: (params: RequestParams = {}) =>
+      this.http.request({
+        path: `/api/User/GetAllUser`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
 
-      userGetAllUserPagingList: (
-        query?: {
-          /** @format int32 */
-          pageNumber?: number;
-          /** @format int32 */
-          pageSize?: number;
-          email?: string;
-        },
-        params: RequestParams = {}
-      ) =>
-        this.http.request({
-          path: `/api/User/GetAllUserPaging`,
-          method: "GET",
-          query: query,
-          secure: true,
-          ...params,
-        }),
     /**
      * No description
      *
