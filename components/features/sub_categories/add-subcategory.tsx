@@ -92,7 +92,7 @@ const AddSubCategoryPopUp = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Add new category</Button>
+        <Button variant="outline">Add new sub-category</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <Form {...form}>

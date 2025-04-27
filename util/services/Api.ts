@@ -152,6 +152,7 @@ export interface Order {
   userId?: number;
   /** @format double */
   totalPrice?: number;
+  email:string;
   shippingAddress?: string | null;
   deliveryInstructions?: string | null;
   status?: string | null;

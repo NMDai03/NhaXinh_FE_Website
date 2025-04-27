@@ -28,6 +28,7 @@ interface Order {
   orderId: string;
   userId: number;
   totalPrice: number;
+  email:string;
   shippingAddress: string;
   deliveryInstructions: string;
   paymentMethod: string;
@@ -58,6 +59,9 @@ export default function OrderDetailSheet({
       <SheetContent side="right" style={{ overflowY: "auto" }}>
         <SheetTitle>Order: {order.orderId}</SheetTitle>
         <div className="space-y-4">
+          <p>
+            <strong>Customer:</strong> {order.email}
+          </p>
           <p>
             <strong>Payment Method:</strong> {order.paymentMethod}
           </p>

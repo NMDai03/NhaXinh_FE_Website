@@ -54,7 +54,7 @@ export default function SubCategories() {
     <Card>
       <CardHeader className="px-7">
         <CardTitle>Sub-categories</CardTitle>
-        <CardDescription>Recent SubCategories from your store.</CardDescription>
+        <CardDescription>Recent Sub-Categories from your store.</CardDescription>
       </CardHeader>
       <CardContent>
         <AddSubCategoryPopUp fetchSubCategories={fetchSubCategories} />
